@@ -25,6 +25,21 @@ const CROSSBAR_OVERSHOOT = 3;
 const CROSSBAR_LEFT_END = LEFT_RAIL_COORD - CROSSBAR_OVERSHOOT;
 const CROSSBAR_RIGHT_END = RIGHT_RAIL_COORD + CROSSBAR_OVERSHOOT;
 
+// Sizes of cart components
+const CART_BACKGROUND_BORDER_WIDTH = 1;
+const CART_FOREGROUND_BORDER_WIDTH = 2;
+const CART_BASE_WIDTH = 30;
+const CART_BASE_HEIGHT = 50;
+const LAZOR_BEAM_WIDTH = 3;
+// Total width and height of cannon (not just distance from center)
+const CANNON_WIDTH = 12;
+const CANNON_LENGTH = 48;
+// Distance from the center of the cart to a corner of the cannon
+const CANNON_RADIUS = Math.sqrt(CANNON_WIDTH * CANNON_WIDTH + CANNON_LENGTH * CANNON_LENGTH) / 2;
+// Positive angle between the direction of the lazor beam
+// and the direction from the center of the cart to a corner of the cannon
+const CANNON_CORNER_ANGLE = Math.atan2(CANNON_WIDTH, CANNON_LENGTH);
+
 // Interval at which to always draw labels of coordinates
 // (e.g. the y-axis will be labeled with the y-value at every multiple of this)
 const COORD_LABEL_INTERVAL = 50;
@@ -73,29 +88,46 @@ function drawBattlefield() {
 
   // Cart base
   ctx.strokeStyle = "#101000";
-  ctx.lineWidth = 1;
+  ctx.lineWidth = CART_BACKGROUND_BORDER_WIDTH;
   ctx.fillStyle = "#503000";
-  ctx.fillRect(185, 175 - intercept, 30, 50);
-  ctx.strokeRect(185, 175 - intercept, 30, 50);
+  let cartCenterX = fieldToCanvasX(0);
+  let cartLeftX = cartCenterX - CART_BASE_WIDTH / 2;
+  let cartCenterY = fieldToCanvasY(intercept);
+  let cartTopY = cartCenterY - CART_BASE_HEIGHT / 2;
+  ctx.fillRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
+  ctx.strokeRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
 
   // Lazor beam
   ctx.strokeStyle = "#f00000";
-  ctx.lineWidth = 3;
+  ctx.lineWidth = LAZOR_BEAM_WIDTH;
   ctx.beginPath();
-  ctx.moveTo(0, 200 + 200 * slope - intercept);
-  ctx.lineTo(400, 200 - 200 * slope - intercept);
+  let leftEdgeY = fieldToCanvasY(slope * canvasToFieldX(0) + intercept);
+  let rightEdgeY = fieldToCanvasY(slope * canvasToFieldX(FIELD_WIDTH) + intercept);
+  ctx.moveTo(0, leftEdgeY);
+  ctx.lineTo(FIELD_WIDTH, rightEdgeY);
   ctx.stroke();
 
   // Lazor cannon
   ctx.strokeStyle = "black";
-  ctx.lineWidth = 2;
+  ctx.lineWidth = CART_FOREGROUND_BORDER_WIDTH;
   ctx.fillStyle = "#a0a0a0";
-  let angle = Math.atan(slope);
+  // Lazor angle is negative arctangent because the slope is in gameplay coordinates,
+  // whereas we want the lazor angle in canvas coordinates,
+  // so we need to account for the reversal of the vertical directionality between the two coordinate systems
+  let lazorAngle = -Math.atan(slope);
+  // The corner of the lazor cannon that's clockwise (CW) from the lazor beam on the same side
+  let cornerAngleCW = lazorAngle - CANNON_CORNER_ANGLE;
+  let offsetXCW = CANNON_RADIUS * Math.cos(cornerAngleCW);
+  let offsetYCW = CANNON_RADIUS * Math.sin(cornerAngleCW);
+  // The corner of the lazor cannon that's counterclockwise (CCW) from the lazor beam on the same side
+  let cornerAngleCCW = lazorAngle + CANNON_CORNER_ANGLE;
+  let offsetXCCW = CANNON_RADIUS * Math.cos(cornerAngleCCW);
+  let offsetYCCW = CANNON_RADIUS * Math.sin(cornerAngleCCW);
   ctx.beginPath();
-  ctx.moveTo(200 + 25 * Math.cos(angle + 0.25), 200 - intercept - 25 * Math.sin(angle + 0.25));
-  ctx.lineTo(200 + 25 * Math.cos(angle - 0.25), 200 - intercept - 25 * Math.sin(angle - 0.25));
-  ctx.lineTo(200 + 25 * Math.cos(angle + Math.PI + 0.25), 200 - intercept - 25 * Math.sin(angle + Math.PI + 0.25));
-  ctx.lineTo(200 + 25 * Math.cos(angle + Math.PI - 0.25), 200 - intercept - 25 * Math.sin(angle + Math.PI - 0.25));
+  ctx.moveTo(cartCenterX + offsetXCCW, cartCenterY + offsetYCCW);
+  ctx.lineTo(cartCenterX + offsetXCW, cartCenterY + offsetYCW);
+  ctx.lineTo(cartCenterX - offsetXCCW, cartCenterY - offsetYCCW);
+  ctx.lineTo(cartCenterX - offsetXCW, cartCenterY - offsetYCW);
   ctx.closePath();
   ctx.stroke();
   ctx.fill();
