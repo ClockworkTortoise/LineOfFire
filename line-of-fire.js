@@ -1,8 +1,8 @@
 function drawBattlefield() {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, 400, 400);
-  let slope = getValue("numerator") / getValue("denominator");
-  let intercept = getValue("intercept");
+  let slope = getNumber("numerator") / getNumber("denominator");
+  let intercept = getNumber("intercept");
 
   // Railway and height labels
   ctx.strokeStyle = "#404040";
