@@ -1,10 +1,11 @@
-// Width and height of battlefield
-const FIELD_WIDTH = 400;
-const FIELD_HEIGHT = 400;
 // Maximum horizontal and vertical coordinate on the battlefield,
 // from an in-game perspective where (0, 0) is the center instead of the upper-left corner
-const FIELD_H_SPAN = FIELD_WIDTH / 2;
-const FIELD_V_SPAN = FIELD_HEIGHT / 2;
+const FIELD_H_SPAN = 200;
+const FIELD_V_SPAN = 200;
+// Width and height of battlefield
+// (adding 1 in order to have a 0 coordinate in the center, plus the span on both sides)
+const FIELD_WIDTH = 2 * FIELD_H_SPAN + 1;
+const FIELD_HEIGHT = 2 * FIELD_V_SPAN + 1;
 
 // Width of each individual track or crossbar in the railway
 const RAIL_WIDTH = 2;
