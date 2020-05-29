@@ -41,6 +41,17 @@ const CANNON_RADIUS = Math.sqrt(CANNON_WIDTH * CANNON_WIDTH + CANNON_LENGTH * CA
 // and the direction from the center of the cart to a corner of the cannon
 const CANNON_CORNER_ANGLE = Math.atan2(CANNON_WIDTH, CANNON_LENGTH);
 
+// Maximum absolute value of numerator and denominator of slope.
+// Numerator ranges from negative of this value to this value.
+// Denominator ranges from 1 to this value.
+const AIMING_RANGE = 20;
+// Amount of extra space to provide on each side of the slope preview
+// (so that the mechanism should fit entirely inside the preview canvas)
+const SLOPE_PREVIEW_MARGIN = 5;
+// Width and height of slope preview canvas
+// (1 for the center, plus the range and margin on both sides)
+const SLOPE_PREVIEW_SIZE = 2 * (AIMING_RANGE + SLOPE_PREVIEW_MARGIN) + 1;
+
 // Interval at which to always draw labels of coordinates
 // (e.g. the y-axis will be labeled with the y-value at every multiple of this)
 const COORD_LABEL_INTERVAL = 50;
@@ -51,6 +62,20 @@ function initialize() {
   let field = document.getElementById("battlefield");
   field.width = FIELD_WIDTH;
   field.height = FIELD_HEIGHT;
+
+  let numBox = document.getElementById("numerator");
+  numBox.min = -AIMING_RANGE;
+  numBox.max = AIMING_RANGE;
+  let denomBox = document.getElementById("denominator");
+  denomBox.max = AIMING_RANGE;
+  let intcBox = document.getElementById("intercept");
+  let cartRange = canvasToFieldY(0);
+  intcBox.min = -cartRange;
+  intcBox.max = cartRange;
+
+  let slopePrev = document.getElementById("slope-prev");
+  slopePrev.width = SLOPE_PREVIEW_SIZE;
+  slopePrev.height = SLOPE_PREVIEW_SIZE;
 
   drawBattlefield();
 }
