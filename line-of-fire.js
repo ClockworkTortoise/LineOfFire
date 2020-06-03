@@ -79,6 +79,13 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+// Indicates if the game is currently showing results of a lazor shot
+var showingResults = false;
+
+// Current position of cart (updated based on controls only when a shot is fired)
+var cartIntercept = 0;
+var cartSlope = 0;
+
 function initialize() {
   let field = document.getElementById("battlefield");
   field.width = FIELD_WIDTH;
@@ -98,15 +105,13 @@ function initialize() {
   slopePrev.width = SLOPE_PREVIEW_SIZE;
   slopePrev.height = SLOPE_PREVIEW_SIZE;
 
-  drawBattlefield();
+  drawBattlefield(false);
   drawSlopePreview();
 }
 
-function drawBattlefield() {
+function drawBattlefield(includeLazor = true) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
-  let slope = getNumber("numerator") / getNumber("denominator");
-  let intercept = getNumber("intercept");
 
   // Railway and height labels
   ctx.strokeStyle = "#404040";
@@ -140,23 +145,25 @@ function drawBattlefield() {
   ctx.fillStyle = "#503000";
   let cartCenterX = fieldToCanvasX(0);
   let cartLeftX = cartCenterX - CART_BASE_WIDTH / 2;
-  let cartCenterY = fieldToCanvasY(intercept);
+  let cartCenterY = fieldToCanvasY(cartIntercept);
   let cartTopY = cartCenterY - CART_BASE_HEIGHT / 2;
   ctx.fillRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
   ctx.strokeRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
 
   // Lazor beam
-  ctx.strokeStyle = LAZOR_COLOR;
-  ctx.lineWidth = LAZOR_BEAM_WIDTH;
-  ctx.beginPath();
-  let leftEdgeY = fieldToCanvasY(slope * canvasToFieldX(0) + intercept);
-  let rightEdgeY = fieldToCanvasY(slope * canvasToFieldX(FIELD_WIDTH) + intercept);
-  ctx.moveTo(0, leftEdgeY);
-  ctx.lineTo(FIELD_WIDTH, rightEdgeY);
-  ctx.stroke();
+  if (includeLazor) {
+    ctx.strokeStyle = LAZOR_COLOR;
+    ctx.lineWidth = LAZOR_BEAM_WIDTH;
+    ctx.beginPath();
+    let leftEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(0) + cartIntercept);
+    let rightEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(FIELD_WIDTH) + cartIntercept);
+    ctx.moveTo(0, leftEdgeY);
+    ctx.lineTo(FIELD_WIDTH, rightEdgeY);
+    ctx.stroke();
+  }
 
   // Lazor cannon
-  drawCannonBarrel(ctx, cartCenterX, cartCenterY, slope);
+  drawCannonBarrel(ctx, cartCenterX, cartCenterY, cartSlope);
 }
 
 // Code for drawing the cannon barrel (used in both the battlefield and the firing angle preview).
@@ -351,6 +358,37 @@ function updateFunction() {
     }
     document.getElementById("equation-prev").innerHTML = functionText;
   }
+}
+
+function fireLazor() {
+  // Button shouldn't be clickable if we're currently showing results
+  // (need to wait to redraw new enemies before firing next shot)
+  if (showingResults) {
+    return;
+  }
+
+  document.getElementById("fire-button").disabled = true;
+  showingResults = true;
+  cartIntercept = getNumber("intercept");
+  cartSlope = getNumber("numerator") / getNumber("denominator");
+  drawBattlefield(true);
+  let ctx = document.getElementById("battlefield").getContext("2d");
+  ctx.textAlign = "left";
+  ctx.textBaseline = "top";
+  ctx.fillStyle = "black";
+  ctx.font = "12px Arial";
+  ctx.fillText("You have fired the lazor. This is a placeholder message. Click to proceed.", 10, 10);
+}
+
+function clickBattlefield() {
+  // So far, clicking the battlefield only matters for clearing the battlefield after seeing the results of a shot
+  if (!showingResults) {
+    return;
+  }
+
+  document.getElementById("fire-button").disabled = false;
+  showingResults = false;
+  drawBattlefield(false);
 }
 
 function getValue(inputId) {

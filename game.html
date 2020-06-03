@@ -11,7 +11,7 @@
     <script src="line-of-fire.js"></script>
   </head>
   <body onload="initialize()">
-    <canvas id="battlefield" width=400 height=400 style="background-color: #a0e0a0"></canvas>
+    <canvas id="battlefield" width=400 height=400 style="background-color: #a0e0a0" onclick="clickBattlefield()"></canvas>
     <table>
       <tr>
         <td>Vertical Offset:</td>
@@ -28,7 +28,7 @@
         <td id="equation-prev" style="color:gray">y = 0</td>
       </tr>
       <tr>
-        <td><input type="button" onclick="drawBattlefield()" value="FIRE!"></td>
+        <td><input id="fire-button" type="button" onclick="fireLazor()" value="FIRE!"></td>
       </tr>
     </table>
   </body>
