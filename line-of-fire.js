@@ -20,6 +20,13 @@ const RAIL_HALF_WHEELSPAN = RAIL_WHEELSPAN / 2;
 const LEFT_RAIL_COORD = FIELD_H_SPAN - RAIL_HALF_WHEELSPAN;
 const RIGHT_RAIL_COORD = FIELD_H_SPAN + RAIL_HALF_WHEELSPAN;
 
+// Configuration for the cross-street in the middle which shows where the horizontal axis is
+const DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER = 20;
+const ROAD_BORDER_THICKNESS = 5;
+const ROAD_CENTER_LINE_THICKNESS = 3;
+const ROAD_CENTER_LINE_DASH_LENGTH = 15;
+const ROAD_CENTER_LINE_DASH_GAP = 5;
+
 // Sizing values relating to the crossbars in the railway
 const CROSSBAR_SPACING = 10;
 const CROSSBAR_OVERSHOOT = 3;
@@ -113,6 +120,37 @@ function drawBattlefield(includeLazor = true) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
 
+  // Cross street indicating location of horizontal axis
+  let xAxisCanvasY = fieldToCanvasY(0);
+  ctx.strokeStyle = "black";
+  ctx.lineWidth = 2 * DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER + 1;
+  ctx.beginPath();
+  ctx.moveTo(0, xAxisCanvasY);
+  ctx.lineTo(FIELD_WIDTH, xAxisCanvasY);
+  ctx.stroke();
+  // Borders at edges of road
+  ctx.strokeStyle = "white";
+  ctx.lineWidth = ROAD_BORDER_THICKNESS;
+  ctx.beginPath();
+  let borderY = xAxisCanvasY + DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
+  ctx.moveTo(0, borderY);
+  ctx.lineTo(FIELD_WIDTH, borderY);
+  borderY = xAxisCanvasY - DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
+  ctx.moveTo(0, borderY);
+  ctx.lineTo(FIELD_WIDTH, borderY);
+  ctx.stroke();
+  // Road center line
+  ctx.strokeStyle = "#ffff00";
+  ctx.lineWidth = ROAD_CENTER_LINE_THICKNESS;
+  ctx.setLineDash([ROAD_CENTER_LINE_DASH_LENGTH, ROAD_CENTER_LINE_DASH_GAP]);
+  ctx.beginPath();
+  // (start a bit to the left so the alignment of the dashes
+  // relative to the edges of the field doesn't look too artificial)
+  ctx.moveTo(-Math.floor(ROAD_CENTER_LINE_DASH_LENGTH / 3), xAxisCanvasY);
+  ctx.lineTo(FIELD_WIDTH, xAxisCanvasY);
+  ctx.stroke();
+  ctx.setLineDash([]);
+
   // Railway and height labels
   ctx.strokeStyle = "#404040";
   ctx.lineWidth = RAIL_WIDTH;
@@ -136,6 +174,10 @@ function drawBattlefield(includeLazor = true) {
   ctx.font = "12px Arial";
   let maxYLabel = COORD_LABEL_INTERVAL * Math.floor(canvasToFieldY(0) / COORD_LABEL_INTERVAL);
   for (let y = maxYLabel; fieldToCanvasY(y) <= FIELD_HEIGHT; y -= COORD_LABEL_INTERVAL) {
+    // Skip the y=0 label since it's in the x-axis road, making it difficult to make the label easily visible
+    if (y === 0) {
+      continue;
+    }
     ctx.fillText(y, Y_AXIS_LABEL_X_COORD, fieldToCanvasY(y));
   }
 
