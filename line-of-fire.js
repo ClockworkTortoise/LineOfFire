@@ -108,6 +108,14 @@ function initialize() {
   intcBox.min = -cartRange;
   intcBox.max = cartRange;
 
+  // Set the cart's starting location away from the absolute center of the battlefield, to make it look less artificial
+  // and also to minimize potential confusion about whether the cart is on the railway or the street
+  numBox.value = 3;
+  denomBox.value = 8;
+  cartSlope = numBox.value / denomBox.value;
+  intcBox.value = -142;
+  cartIntercept = intcBox.value;
+
   let slopePrev = document.getElementById("slope-prev");
   slopePrev.width = SLOPE_PREVIEW_SIZE;
   slopePrev.height = SLOPE_PREVIEW_SIZE;
