@@ -127,7 +127,11 @@ function initialize() {
 function drawBattlefield(includeLazor = true) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+  drawTerrain(ctx);
+  drawCart(ctx, includeLazor);
+}
 
+function drawTerrain(ctx) {
   // Cross street indicating location of horizontal axis
   let xAxisCanvasY = fieldToCanvasY(0);
   ctx.strokeStyle = "black";
@@ -188,7 +192,9 @@ function drawBattlefield(includeLazor = true) {
     }
     ctx.fillText(y, Y_AXIS_LABEL_X_COORD, fieldToCanvasY(y));
   }
+}
 
+function drawCart(ctx, includeLazor) {
   // Cart base
   ctx.strokeStyle = "#101000";
   ctx.lineWidth = CART_BACKGROUND_BORDER_WIDTH;
