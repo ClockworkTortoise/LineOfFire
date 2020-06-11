@@ -402,6 +402,17 @@ function updateFunction() {
   }
 }
 
+// Indicates the coordinates (in the game system) of where the mouse is aimed, and any enemies at that location
+function describeTarget(event) {
+  let message = "Pointing at: (" + canvasToFieldX(event.offsetX) + ", " + canvasToFieldY(event.offsetY) + ")";
+  document.getElementById("mouseover-status").innerHTML = message;
+}
+
+// Resets the message provided by describeTarget() back to a "not pointing at stuff" message
+function undescribeTarget() {
+  document.getElementById("mouseover-status").innerHTML = "Not currently pointing at the battlefield";
+}
+
 function fireLazor() {
   // Button shouldn't be clickable if we're currently showing results
   // (need to wait to redraw new enemies before firing next shot)

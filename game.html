@@ -11,7 +11,15 @@
     <script src="line-of-fire.js"></script>
   </head>
   <body onload="initialize()">
-    <canvas id="battlefield" width=400 height=400 style="background-color: #a0e0a0" onclick="clickBattlefield()"></canvas>
+    <canvas
+      id="battlefield"
+      width=400 height=400
+      style="background-color: #a0e0a0"
+      onclick="clickBattlefield()"
+      onmousemove="describeTarget(event)"
+      onmouseleave="undescribeTarget()"
+    ></canvas>
+    <p id="mouseover-status">Not currently pointing at the battlefield</p>
     <table>
       <tr>
         <td>Vertical Offset:</td>
