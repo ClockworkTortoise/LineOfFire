@@ -435,7 +435,17 @@ function updateFunction() {
 
 // Indicates the coordinates (in the game system) of where the mouse is aimed, and any enemies at that location
 function describeTarget(event) {
-  let message = "Pointing at: (" + canvasToFieldX(event.offsetX) + ", " + canvasToFieldY(event.offsetY) + ")";
+  let fieldX = canvasToFieldX(event.offsetX);
+  let fieldY = canvasToFieldY(event.offsetY);
+  let message = "Pointing at: (" + fieldX + ", " + fieldY + ")";
+  for (enemy of enemies) {
+    let dx = fieldX - enemy.x;
+    let dy = fieldY - enemy.y;
+    if (dx * dx + dy * dy <= enemy.radius * enemy.radius) {
+      // TODO: update to provide more information about the enemy, and maybe be able to handle multiple overlapping enemies
+      message += " with an enemy of radius " + enemy.radius.toFixed(2) + " at (" + enemy.x.toFixed(2) + ", " + enemy.y.toFixed(2) + ")";
+    }
+  }
   document.getElementById("mouseover-status").innerHTML = message;
 }
 
