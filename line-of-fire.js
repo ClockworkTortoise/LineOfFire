@@ -93,6 +93,10 @@ var showingResults = false;
 var cartIntercept = 0;
 var cartSlope = 0;
 
+// List of enemies which are currently on the battlefield.
+// This will include their enemy type, current location, and current status (e.g. if a tougher enemy is injured or not).
+var enemies = [];
+
 function initialize() {
   let field = document.getElementById("battlefield");
   field.width = FIELD_WIDTH;
@@ -128,6 +132,7 @@ function drawBattlefield(includeLazor = true) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
   drawTerrain(ctx);
+  drawEnemies(ctx);
   drawCart(ctx, includeLazor);
 }
 
@@ -191,6 +196,18 @@ function drawTerrain(ctx) {
       continue;
     }
     ctx.fillText(y, Y_AXIS_LABEL_X_COORD, fieldToCanvasY(y));
+  }
+}
+
+function drawEnemies(ctx) {
+  for (enemy of enemies) {
+    let canvasX = fieldToCanvasX(enemy.x);
+    let canvasY = fieldToCanvasY(enemy.y);
+    // PLACEHOLDER IMPLEMENTATION - we'll probably put a "draw this" function as one of the fields of each enemy type
+    ctx.fillStyle = "#dd00dd";
+    ctx.beginPath();
+    ctx.arc(canvasX, canvasY, enemy.radius, 0, 2 * Math.PI);
+    ctx.fill();
   }
 }
 
@@ -448,14 +465,33 @@ function fireLazor() {
 }
 
 function clickBattlefield() {
-  // So far, clicking the battlefield only matters for clearing the battlefield after seeing the results of a shot
+  // So far, clicking the battlefield only matters for clearing and updating the battlefield after seeing the results of a shot
   if (!showingResults) {
     return;
   }
 
+  updateEnemies();
+  spawnEnemies();
+
   document.getElementById("fire-button").disabled = false;
   showingResults = false;
   drawBattlefield(false);
+}
+
+// Remove any destroyed enemies, and have surviving enemies do their movement
+function updateEnemies() {
+  // PLACEHOLDER IMPLEMENTATION - we'll just remove all the enemies for now
+  enemies = [];
+}
+
+// Spawn new enemies according to the rules of the current game stage
+function spawnEnemies() {
+  // PLACEHOLDER IMPLEMENTATION - just randomly put an enemy somewhere on the battlefield
+  enemies.push({
+    radius: 4 + 8 * Math.random(),
+    x: canvasToFieldX(Math.random() * FIELD_WIDTH),
+    y: canvasToFieldY(Math.random() * FIELD_HEIGHT),
+  });
 }
 
 function getValue(inputId) {
