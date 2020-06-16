@@ -489,12 +489,17 @@ function fireLazor() {
   cartIntercept = getNumber("intercept");
   cartSlope = getNumber("numerator") / getNumber("denominator");
   drawBattlefield(true);
+
+  let hitOrMiss = "";
+  if (enemies.length > 0) {
+    hitOrMiss = lazorHitsEnemy(enemies[0]) ? " and hit the enemy" : " and missed the enemy";
+  }
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
   ctx.fillStyle = "black";
   ctx.font = "12px Arial";
-  ctx.fillText("You have fired the lazor. This is a placeholder message. Click to proceed.", 10, 10);
+  ctx.fillText("You have fired the lazor" + hitOrMiss + ". This is a placeholder message. Click to proceed.", 10, 10);
 }
 
 function clickBattlefield() {
@@ -527,6 +532,18 @@ function spawnEnemies() {
     x: canvasToFieldX(Math.random() * FIELD_WIDTH),
     y: canvasToFieldY(Math.random() * FIELD_HEIGHT),
   });
+}
+
+// Determines whether the lazor hits the given enemy,
+// assuming the lazor is pointed along the line indicated by the cartSlope and cartIntercept variables
+function lazorHitsEnemy(enemy) {
+  // The lazor touches the enemy if its center line is within this distance of the enemy's center.
+  let distanceLimit = enemy.radius + LAZOR_BEAM_WIDTH / 2;
+  // The distance from the lazor's center line to the center of the enemy is proportional to this amount.
+  let scaledDistance = enemy.y - cartSlope * enemy.x - cartIntercept;
+  // Since the proportionality constant is the square root of (1 plus the square of the slope),
+  // we'll compare the squares of the distances to avoid having to take a square root.
+  return scaledDistance * scaledDistance / (cartSlope * cartSlope + 1) <= distanceLimit * distanceLimit;
 }
 
 function getValue(inputId) {
