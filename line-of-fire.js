@@ -1,3 +1,7 @@
+//
+// BEGIN SECTION: Graphics and game configuration constants
+//
+
 // Maximum horizontal and vertical coordinate on the battlefield,
 // from an in-game perspective where (0, 0) is the center instead of the upper-left corner
 const FIELD_H_SPAN = 500;
@@ -86,9 +90,17 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+//
+// BEGIN SECTION: Constants for convenience in referring to things
+//
+
 // id fields of inputs used to control the cannon
 // (makes it easier to enable/disable all of them at once so they can only be modified when it's time to decide where to fire)
 const CONTROL_ELEMENT_IDS = ["numerator", "denominator", "intercept", "fire-button"];
+
+//
+// BEGIN SECTION: Variables for tracking game state
+//
 
 // Indicates if the game is currently showing results of a lazor shot
 var showingResults = false;
@@ -100,6 +112,10 @@ var cartSlope = 0;
 // List of enemies which are currently on the battlefield.
 // This will include their enemy type, current location, and current status (e.g. if a tougher enemy is injured or not).
 var enemies = [];
+
+//
+// END of constants and state variables, BEGIN functional code
+//
 
 function initialize() {
   let field = document.getElementById("battlefield");
