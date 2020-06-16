@@ -86,6 +86,10 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+// id fields of inputs used to control the cannon
+// (makes it easier to enable/disable all of them at once so they can only be modified when it's time to decide where to fire)
+const CONTROL_ELEMENT_IDS = ["numerator", "denominator", "intercept", "fire-button"];
+
 // Indicates if the game is currently showing results of a lazor shot
 var showingResults = false;
 
@@ -461,7 +465,10 @@ function fireLazor() {
     return;
   }
 
-  document.getElementById("fire-button").disabled = true;
+  for (controlElementId of CONTROL_ELEMENT_IDS) {
+    document.getElementById(controlElementId).disabled = true;
+  }
+
   showingResults = true;
   cartIntercept = getNumber("intercept");
   cartSlope = getNumber("numerator") / getNumber("denominator");
@@ -483,7 +490,9 @@ function clickBattlefield() {
   updateEnemies();
   spawnEnemies();
 
-  document.getElementById("fire-button").disabled = false;
+  for (controlElementId of CONTROL_ELEMENT_IDS) {
+    document.getElementById(controlElementId).disabled = false;
+  }
   showingResults = false;
   drawBattlefield(false);
 }
