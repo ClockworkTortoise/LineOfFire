@@ -526,8 +526,10 @@ function clickBattlefield() {
 
 // Remove any destroyed enemies, and have surviving enemies do their movement
 function updateEnemies() {
-  // PLACEHOLDER IMPLEMENTATION - we'll just remove all the enemies for now
-  enemies = [];
+  // Get rid of any enemies that don't have more than zero health
+  enemies = enemies.filter(enemy => enemy.health > 0);
+
+  // TODO: have surviving enemies move
 }
 
 // Spawn new enemies according to the rules of the current game stage
