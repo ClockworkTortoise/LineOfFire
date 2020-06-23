@@ -225,7 +225,7 @@ function drawEnemies(ctx) {
     let canvasX = fieldToCanvasX(enemy.x);
     let canvasY = fieldToCanvasY(enemy.y);
     // PLACEHOLDER IMPLEMENTATION - we'll probably put a "draw this" function as one of the fields of each enemy type
-    ctx.fillStyle = "#dd00dd";
+    ctx.fillStyle = enemy.health > 0 ? "#dd00dd" : "#608060";
     ctx.beginPath();
     ctx.arc(canvasX, canvasY, enemy.radius, 0, 2 * Math.PI);
     ctx.fill();
