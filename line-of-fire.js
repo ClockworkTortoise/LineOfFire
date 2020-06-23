@@ -489,6 +489,11 @@ function fireLazor() {
   showingResults = true;
   cartIntercept = getNumber("intercept");
   cartSlope = getNumber("numerator") / getNumber("denominator");
+
+  for (enemy of enemies) {
+    checkLazorEffects(enemy);
+  }
+
   drawBattlefield(true);
 
   let hitOrMiss = "";
@@ -532,7 +537,16 @@ function spawnEnemies() {
     radius: 4 + 8 * Math.random(),
     x: canvasToFieldX(Math.random() * FIELD_WIDTH),
     y: canvasToFieldY(Math.random() * FIELD_HEIGHT),
+    health: 1,
   });
+}
+
+// Applies any effects the lazor beam has on the given enemy
+// (usually reducing health if the lazor hits the enemy)
+function checkLazorEffects(enemy) {
+  if (lazorHitsEnemy(enemy)) {
+    enemy.health--;
+  }
 }
 
 // Determines whether the lazor hits the given enemy,
