@@ -495,17 +495,12 @@ function fireLazor() {
   }
 
   drawBattlefield(true);
-
-  let hitOrMiss = "";
-  if (enemies.length > 0) {
-    hitOrMiss = lazorHitsEnemy(enemies[0]) ? " and hit the enemy" : " and missed the enemy";
-  }
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.textAlign = "left";
   ctx.textBaseline = "top";
   ctx.fillStyle = "black";
-  ctx.font = "12px Arial";
-  ctx.fillText("You have fired the lazor" + hitOrMiss + ". This is a placeholder message. Click to proceed.", 10, 10);
+  ctx.font = "18px Arial";
+  ctx.fillText("Showing results of shot. Click to proceed.", 10, 10);
 }
 
 function clickBattlefield() {
