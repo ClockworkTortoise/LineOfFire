@@ -144,6 +144,7 @@ function initialize() {
   slopePrev.width = SLOPE_PREVIEW_SIZE;
   slopePrev.height = SLOPE_PREVIEW_SIZE;
 
+  spawnEnemies();
   drawBattlefield(false);
   drawSlopePreview();
 }
