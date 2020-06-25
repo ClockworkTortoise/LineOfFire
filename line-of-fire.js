@@ -90,6 +90,12 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+// Number of enemies that need to be defeated in the early stages in order to proceed to the next stage
+const BASIC_STAGE_DURATION = 5;
+
+// Latest game stage number where the game won't spawn new enemies or move existing ones unless you cleared the battlefield
+const MAX_SAFE_STAGE = 2;
+
 // Maximum number of messages to show in the advisory queue at one time
 const MAX_ADVISORIES_SHOWN = 10;
 
@@ -119,11 +125,19 @@ var enemies = [];
 // Messages to communicate with the player about things that happened in the game
 var advisories = [];
 
+// Current stage of the game, and a counter to determine when to advance to the next stage
+var gameStage = -1;
+var stageProgress = 0;
+
 //
 // END of constants and state variables, BEGIN functional code
 //
 
 function initialize() {
+  // TODO: Let players choose what stage to start with
+  gameStage = 0;
+  stageProgress = 0;
+
   if (advisories.length > 0) {
     advisories = ["New game started; the messages previously shown here have been deleted."];
     updateAdvisoryDisplay();
@@ -530,8 +544,18 @@ function clickBattlefield() {
   }
 
   updateEnemies();
-  if (enemies.length === 0) {
+  if (gameStage > MAX_SAFE_STAGE || enemies.length === 0) {
     spawnEnemies();
+    if (stageProgress >= BASIC_STAGE_DURATION) {
+      gameStage++;
+      stageProgress = 0;
+      let advisory = "You've defeated enough enemies to advance to stage " + gameStage + "!";
+      if (gameStage === 1 + MAX_SAFE_STAGE) {
+        advisory += " New enemies will now spawn even if you miss."
+      }
+      advisories.unshift(advisory);
+      updateAdvisoryDisplay();
+    }
   } else {
     advisories.unshift("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
       + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
@@ -550,7 +574,7 @@ function updateEnemies() {
   // Get rid of any enemies that don't have more than zero health
   enemies = enemies.filter(enemy => enemy.health > 0);
 
-  // TODO: have surviving enemies move
+  // TODO: have surviving enemies move (unless we're in one of the "safe" stages)
 }
 
 // Spawn new enemies according to the rules of the current game stage
@@ -569,6 +593,9 @@ function spawnEnemies() {
 function checkLazorEffects(enemy) {
   if (lazorHitsEnemy(enemy)) {
     enemy.health--;
+    if (enemy.health <= 0) {
+      stageProgress++;
+    }
   }
 }
 
