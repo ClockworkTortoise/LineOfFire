@@ -90,6 +90,9 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+// Maximum number of messages to show in the advisory queue at one time
+const MAX_ADVISORIES_SHOWN = 10;
+
 //
 // BEGIN SECTION: Constants for convenience in referring to things
 //
@@ -113,11 +116,19 @@ var cartSlope = 0;
 // This will include their enemy type, current location, and current status (e.g. if a tougher enemy is injured or not).
 var enemies = [];
 
+// Messages to communicate with the player about things that happened in the game
+var advisories = [];
+
 //
 // END of constants and state variables, BEGIN functional code
 //
 
 function initialize() {
+  if (advisories.length > 0) {
+    advisories = ["New game started; the messages previously shown here have been deleted."];
+    updateAdvisoryDisplay();
+  }
+
   let field = document.getElementById("battlefield");
   field.width = FIELD_WIDTH;
   field.height = FIELD_HEIGHT;
@@ -475,6 +486,15 @@ function undescribeTarget() {
   document.getElementById("mouseover-status").innerHTML = "Not currently pointing at the battlefield";
 }
 
+// Update the advisory queue area to show up to the configured maximum number of the most recent messages
+function updateAdvisoryDisplay() {
+  let advisoryHTML = "";
+  for (advisory of advisories.slice(0, MAX_ADVISORIES_SHOWN)) {
+    advisoryHTML += "<p>" + advisory + "</p>";
+  }
+  document.getElementById("advisory-queue").innerHTML = advisoryHTML;
+}
+
 function fireLazor() {
   // Button shouldn't be clickable if we're currently showing results
   // (need to wait to redraw new enemies before firing next shot)
@@ -510,7 +530,13 @@ function clickBattlefield() {
   }
 
   updateEnemies();
-  spawnEnemies();
+  if (enemies.length === 0) {
+    spawnEnemies();
+  } else {
+    advisories.unshift("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
+      + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
+    updateAdvisoryDisplay();
+  }
 
   for (controlElementId of CONTROL_ELEMENT_IDS) {
     document.getElementById(controlElementId).disabled = false;
