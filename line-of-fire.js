@@ -503,7 +503,7 @@ function undescribeTarget() {
 // Update the advisory queue area to show up to the configured maximum number of the most recent messages
 function updateAdvisoryDisplay() {
   let advisoryHTML = "";
-  for (advisory of advisories.slice(0, MAX_ADVISORIES_SHOWN)) {
+  for (advisory of advisories.slice(-MAX_ADVISORIES_SHOWN)) {
     advisoryHTML += "<p>" + advisory + "</p>";
   }
   document.getElementById("advisory-queue").innerHTML = advisoryHTML;
@@ -553,11 +553,11 @@ function clickBattlefield() {
       if (gameStage === 1 + MAX_SAFE_STAGE) {
         advisory += " New enemies will now spawn even if you miss."
       }
-      advisories.unshift(advisory);
+      advisories.push(advisory);
       updateAdvisoryDisplay();
     }
   } else {
-    advisories.unshift("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
+    advisories.push("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
       + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
     updateAdvisoryDisplay();
   }
