@@ -138,10 +138,14 @@ function initialize() {
   gameStage = 0;
   stageProgress = 0;
 
-  if (advisories.length > 0) {
-    advisories = ["New game started; the messages previously shown here have been deleted."];
-    updateAdvisoryDisplay();
-  }
+  advisories = [
+    "Hostile aliens are sending monsters to attack our main railway, hoping to disrupt our supply lines!"
+      + " Repel the attack with our brand-new Large Alien Zapper On Rails, or LAZOR for short."
+      + " Try to hold them off long enough for the main army to arrive with our alien allies!",
+    "You are now in game stage 0. The first monsters are starting to show up one at a time."
+      + " You should have no trouble picking them off before they reach the railway.",
+    ];
+  updateAdvisoryDisplay();
 
   let field = document.getElementById("battlefield");
   field.width = FIELD_WIDTH;
