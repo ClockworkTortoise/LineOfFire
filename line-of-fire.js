@@ -507,8 +507,21 @@ function undescribeTarget() {
 // Update the advisory queue area to show up to the configured maximum number of the most recent messages
 function updateAdvisoryDisplay() {
   let advisoryHTML = "";
-  for (advisory of advisories.slice(-MAX_ADVISORIES_SHOWN)) {
-    advisoryHTML += "<p>" + advisory + "</p>";
+  let advisoriesShown = advisories.slice(-MAX_ADVISORIES_SHOWN);
+  for (let i = 0; i < advisoriesShown.length; i++) {
+    // We'll start to fade some older advisories once enough new ones show up.
+    // If the maximum number of advisories is being shown, then we'll fade the oldest three.
+    // If we have fewer advisories, we'll fade any which are old enough that they would be in the oldest three
+    // if we had enough older messages to reach the maximum.
+    let distanceFromEnd = advisoriesShown.length - i; // newest message is 1
+    let newness = MAX_ADVISORIES_SHOWN - distanceFromEnd; // oldest advisory that could be shown would be 0
+    if (newness < 3) {
+      let opacity = (newness + 1) / 4;
+      advisoryHTML += '<p style="opacity:' + opacity + ';">';
+    } else {
+      advisoryHTML += "<p>";
+    }
+    advisoryHTML += advisoriesShown[i] + "</p>";
   }
   document.getElementById("advisory-queue").innerHTML = advisoryHTML;
 }
