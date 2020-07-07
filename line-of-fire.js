@@ -125,9 +125,10 @@ var enemies = [];
 // Messages to communicate with the player about things that happened in the game
 var advisories = [];
 
-// Current stage of the game, and a counter to determine when to advance to the next stage
+// Current stage of the game
 var gameStage = -1;
-var stageProgress = 0;
+// Counter for how many aliens have been killed this stage (which helps to determine when to advance to the next stage)
+var stageKills = 0;
 
 //
 // END of constants and state variables, BEGIN functional code
@@ -136,7 +137,7 @@ var stageProgress = 0;
 function initialize() {
   // TODO: Let players choose what stage to start with
   gameStage = 0;
-  stageProgress = 0;
+  stageKills = 0;
 
   advisories = [
     "Hostile aliens are sending monsters to attack our main railway, hoping to disrupt our supply lines!"
@@ -567,9 +568,9 @@ function clickBattlefield() {
   updateEnemies();
   if (gameStage > MAX_SAFE_STAGE || enemies.length === 0) {
     spawnEnemies();
-    if (stageProgress >= BASIC_STAGE_DURATION) {
+    if (stageKills >= BASIC_STAGE_DURATION) {
       gameStage++;
-      stageProgress = 0;
+      stageKills = 0;
       let advisory = "You've defeated enough enemies to advance to stage " + gameStage + "!";
       if (gameStage === 1 + MAX_SAFE_STAGE) {
         advisory += " New enemies will now spawn even if you miss."
@@ -592,8 +593,10 @@ function clickBattlefield() {
 
 // Remove any destroyed enemies, and have surviving enemies do their movement
 function updateEnemies() {
-  // Get rid of any enemies whose health has been completely depleted
+  // Get rid of any enemies whose health has been completely depleted (and update kill count)
+  let previousEnemyCount = enemies.length;
   enemies = enemies.filter(enemy => enemy.health > 0);
+  stageKills += previousEnemyCount - enemies.length;
 
   // TODO: have surviving enemies move (unless we're in one of the "safe" stages)
 }
@@ -614,9 +617,6 @@ function spawnEnemies() {
 function checkLazorEffects(enemy) {
   if (lazorHitsEnemy(enemy)) {
     enemy.health--;
-    if (enemy.health <= 0) {
-      stageProgress++;
-    }
   }
 }
 
