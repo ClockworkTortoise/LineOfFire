@@ -156,7 +156,8 @@ var enemies = [];
 var advisories = [];
 
 // Current stage of the game
-var gameStage = -1;
+var currentStageNumber = -1;
+var currentStage = null;
 // Counter for how many aliens have been killed this stage (which helps to determine when to advance to the next stage)
 var stageKills = 0;
 
@@ -166,7 +167,8 @@ var stageKills = 0;
 
 function initialize() {
   // TODO: Let players choose what stage to start with
-  gameStage = 0;
+  currentStageNumber = 0;
+  currentStage = STAGES[currentStageNumber];
   stageKills = 0;
 
   advisories = [
@@ -177,7 +179,7 @@ function initialize() {
       + ' as shown in the preview next to them. "Cart Position" sets where the center of your vehicle'
       + ' will be when you shoot, as indicated by the labels next to the railway.'
       + ' Once you\'ve set those all where you want them, click the "FIRE!" button to take your shot!',
-    STAGES[gameStage].intro,
+    currentStage.intro,
   ];
   updateAdvisoryDisplay();
 
@@ -595,16 +597,17 @@ function clickBattlefield() {
   }
 
   updateEnemies();
-  if (STAGES[gameStage].safe && enemies.length > 0) {
+  if (currentStage.safe && enemies.length > 0) {
     advisories.push("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
       + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
     updateAdvisoryDisplay();
   } else {
     spawnEnemies();
-    if (STAGES[gameStage].end()) {
-      gameStage++;
+    if (currentStage.end()) {
+      currentStageNumber++;
+      currentStage = STAGES[currentStageNumber];
       stageKills = 0;
-      advisories.push(STAGES[gameStage].intro);
+      advisories.push(currentStage.intro);
       updateAdvisoryDisplay();
     }
   }
