@@ -592,7 +592,7 @@ function clickBattlefield() {
 
 // Remove any destroyed enemies, and have surviving enemies do their movement
 function updateEnemies() {
-  // Get rid of any enemies that don't have more than zero health
+  // Get rid of any enemies whose health has been completely depleted
   enemies = enemies.filter(enemy => enemy.health > 0);
 
   // TODO: have surviving enemies move (unless we're in one of the "safe" stages)
