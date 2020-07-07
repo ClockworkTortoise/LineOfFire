@@ -142,6 +142,10 @@ function initialize() {
     "Hostile aliens are sending monsters to attack our main railway, hoping to disrupt our supply lines!"
       + " Repel the attack with our brand-new Large Alien Zapper On Rails, or LAZOR for short."
       + " Try to hold them off long enough for the main army to arrive with our alien allies!",
+    'The "Vertical Offset" and "Arm Extension" controls affect the angle you shoot at,'
+      + ' as shown in the preview next to them. "Cart Position" sets where the center of your vehicle'
+      + ' will be when you shoot, as indicated by the labels next to the railway.'
+      + ' Once you\'ve set those all where you want them, click the "FIRE!" button to take your shot!',
     "You are now in game stage 0. The first monsters are starting to show up one at a time."
       + " You should have no trouble picking them off before they reach the railway.",
     ];
