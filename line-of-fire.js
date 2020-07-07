@@ -100,25 +100,36 @@ const BASIC_STAGE_DURATION = 5;
 // intro: The message to show to the player at the start of the stage.
 // safe: If true, the game will not move and spawn enemies unless the player eliminates all the enemies.
 // end: A function to determine when to end the stage and move on to the next stage.
+// locked: A list of controls that will NOT be reactivated after showing results, during this stage
 const STAGES = [
   // Stage 0
   {
-    intro: "You are now in game stage 0. The first monsters are starting to show up one at a time."
+    intro: "You are now in game stage 0. The first small monsters are starting to show up one at a time."
       + " You should have no trouble picking them off before they reach the railway.",
     safe: true,
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+    locked: [],
   },
   // Stage 1
   {
-    intro: "You are now in game stage 1. This stage has yet to be fully defined.",
+    intro: "You are now in game stage 1. Something has jammed the motor!"
+      + " You won't be able to change the cart location until we get that fixed."
+      + " Fortunately, the monsters are still small and only showing up one at a time,"
+      + " so you'll still be able to pick them all off before they reach the railway.",
     safe: true,
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+    locked: ["intercept"],
   },
   // Stage 2
   {
-    intro: "You are now in game stage 2. This stage has yet to be fully defined.",
+    intro: "You are now in game stage 2. We had to use parts from the aiming controls to fix the motor!"
+      + " You can now move the cart again, but you won't be able to change the firing angle for now."
+      + " Don't worry, we're working on a solution to allow the aiming controls to work without those parts."
+      + " The monsters are still small and only showing up one at a time, so you'll still be able to pick them off"
+      + " before they reach the railway. We should have the fix in place before things start to get worse.",
     safe: true,
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+    locked: ["numerator", "denominator"],
   },
   // Stage 3
   {
@@ -126,6 +137,7 @@ const STAGES = [
       + " Enemies will now spawn even if you miss. This is the last stage of the game for now.",
     safe: false,
     end: function() { return false; },
+    locked: [],
   },
 ];
 
@@ -613,7 +625,9 @@ function clickBattlefield() {
   }
 
   for (controlElementId of CONTROL_ELEMENT_IDS) {
-    document.getElementById(controlElementId).disabled = false;
+    if (!currentStage.locked.includes(controlElementId)) {
+      document.getElementById(controlElementId).disabled = false;
+    }
   }
   showingResults = false;
   drawBattlefield(false);
@@ -632,6 +646,9 @@ function updateEnemies() {
 // Spawn new enemies according to the rules of the current game stage
 function spawnEnemies() {
   // PLACEHOLDER IMPLEMENTATION - just randomly put an enemy somewhere on the battlefield
+  // TODO: Make sure it's always possible to hit the enemy during stages where some controls are locked!
+  // (Also: Ideally, the last enemy before a locking stage should probably spawn somewhere that
+  // you can hit it without using TOO extreme a positioning.)
   enemies.push({
     radius: 4 + 8 * Math.random(),
     x: canvasToFieldX(Math.random() * FIELD_WIDTH),
