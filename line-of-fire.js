@@ -90,14 +90,14 @@ const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 
+// Maximum number of messages to show in the advisory queue at one time
+const MAX_ADVISORIES_SHOWN = 10;
+
 // Number of enemies that need to be defeated in the early stages in order to proceed to the next stage
 const BASIC_STAGE_DURATION = 5;
 
 // Latest game stage number where the game won't spawn new enemies or move existing ones unless you cleared the battlefield
 const MAX_SAFE_STAGE = 2;
-
-// Maximum number of messages to show in the advisory queue at one time
-const MAX_ADVISORIES_SHOWN = 10;
 
 //
 // BEGIN SECTION: Constants for convenience in referring to things
