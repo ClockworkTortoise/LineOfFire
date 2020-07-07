@@ -96,8 +96,35 @@ const MAX_ADVISORIES_SHOWN = 10;
 // Number of enemies that need to be defeated in the early stages in order to proceed to the next stage
 const BASIC_STAGE_DURATION = 5;
 
-// Latest game stage number where the game won't spawn new enemies or move existing ones unless you cleared the battlefield
-const MAX_SAFE_STAGE = 2;
+// Data to define the different stages of the game
+const STAGES = [
+  // Stage 0
+  {
+    intro: "You are now in game stage 0. The first monsters are starting to show up one at a time."
+      + " You should have no trouble picking them off before they reach the railway.",
+    safe: true,
+    end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+  },
+  // Stage 1
+  {
+    intro: "You are now in game stage 1. This stage has yet to be fully defined.",
+    safe: true,
+    end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+  },
+  // Stage 2
+  {
+    intro: "You are now in game stage 2. This stage has yet to be fully defined.",
+    safe: true,
+    end: function() { return stageKills >= BASIC_STAGE_DURATION; },
+  },
+  // Stage 3
+  {
+    intro: "You are now in game stage 3. This stage has yet to be fully defined."
+      + " Enemies will now spawn even if you miss. This is the last stage of the game for now.",
+    safe: false,
+    end: function() { return false; },
+  },
+];
 
 //
 // BEGIN SECTION: Constants for convenience in referring to things
@@ -147,9 +174,8 @@ function initialize() {
       + ' as shown in the preview next to them. "Cart Position" sets where the center of your vehicle'
       + ' will be when you shoot, as indicated by the labels next to the railway.'
       + ' Once you\'ve set those all where you want them, click the "FIRE!" button to take your shot!',
-    "You are now in game stage 0. The first monsters are starting to show up one at a time."
-      + " You should have no trouble picking them off before they reach the railway.",
-    ];
+    STAGES[gameStage].intro,
+  ];
   updateAdvisoryDisplay();
 
   let field = document.getElementById("battlefield");
@@ -566,22 +592,18 @@ function clickBattlefield() {
   }
 
   updateEnemies();
-  if (gameStage > MAX_SAFE_STAGE || enemies.length === 0) {
-    spawnEnemies();
-    if (stageKills >= BASIC_STAGE_DURATION) {
-      gameStage++;
-      stageKills = 0;
-      let advisory = "You've defeated enough enemies to advance to stage " + gameStage + "!";
-      if (gameStage === 1 + MAX_SAFE_STAGE) {
-        advisory += " New enemies will now spawn even if you miss."
-      }
-      advisories.push(advisory);
-      updateAdvisoryDisplay();
-    }
-  } else {
+  if (STAGES[gameStage].safe && enemies.length > 0) {
     advisories.push("Missed! Since this is an early stage of the game, you're being given another chance to hit your target. "
       + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
     updateAdvisoryDisplay();
+  } else {
+    spawnEnemies();
+    if (STAGES[gameStage].end()) {
+      gameStage++;
+      stageKills = 0;
+      advisories.push(STAGES[gameStage].intro);
+      updateAdvisoryDisplay();
+    }
   }
 
   for (controlElementId of CONTROL_ELEMENT_IDS) {
