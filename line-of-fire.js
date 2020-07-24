@@ -191,6 +191,9 @@ function initialize() {
       + ' as shown in the preview next to them. "Cart Position" sets where the center of your vehicle'
       + ' will be when you shoot, as indicated by the labels next to the railway.'
       + ' Once you\'ve set those all where you want them, click the "FIRE!" button to take your shot!',
+    'If any part of the LAZOR beam passes through any part of an enemy, it will count as a hit.'
+      + ' If it looks like you scored a hit but the game doesn\'t count it as one,'
+      + ' that\'s because you missed by less than a pixel.',
     currentStage.intro,
   ];
   updateAdvisoryDisplay();
