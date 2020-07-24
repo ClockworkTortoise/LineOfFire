@@ -216,6 +216,7 @@ function initialize() {
   cartSlope = numBox.value / denomBox.value;
   intcBox.value = -142;
   cartIntercept = intcBox.value;
+  updateFunction();
 
   let slopePrev = document.getElementById("slope-prev");
   slopePrev.width = SLOPE_PREVIEW_SIZE;
