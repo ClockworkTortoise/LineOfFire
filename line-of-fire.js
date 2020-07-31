@@ -670,16 +670,66 @@ function spawnEnemies() {
     type: enemyType,
     radius: randomFromRealRange(enemyType.minRadius, enemyType.maxRadius),
     health: enemyType.startingHealth,
-    speed: randomFromRealRange(enemyType.minSpeed, enemyType.maxSpeed),
   };
-  let distanceOfEntry = randomFromIntegerRange(0, Math.floor(enemy.speed));
-  // 50/50 chance of spawning on either the left or the right side
-  if (Math.random() < 0.5) {
-    enemy.x = FIELD_H_SPAN - distanceOfEntry;
-  } else {
-    enemy.x = distanceOfEntry - FIELD_H_SPAN;
-  }
-  enemy.y = randomFromIntegerRange(-FIELD_V_SPAN, FIELD_V_SPAN);
+
+  // Choose speed and x-position until we have an x-position where the lazor can hit the enemy at SOME y.
+  // TODO: Consider whether this needs to be modified to ensure the enemy doesn't require an unhittable slope
+  //       (For example, if the slope needs to be approximately 13.5, you can't get closer than 13 or 14 if the controls have a range of 20)
+  let minY, maxY;
+  do {
+    enemy.speed = randomFromRealRange(enemyType.minSpeed, enemyType.maxSpeed);
+
+    let distanceOfEntry = randomFromIntegerRange(0, Math.floor(enemy.speed));
+    // 50/50 chance of spawning on either the left or the right side
+    if (Math.random() < 0.5) {
+      enemy.x = FIELD_H_SPAN - distanceOfEntry;
+    } else {
+      enemy.x = distanceOfEntry - FIELD_H_SPAN;
+    }
+
+    let minNumerator, maxNumerator;
+    if (currentStage.locked.includes("numerator")) {
+      minNumerator = getNumber("numerator");
+      maxNumerator = minNumerator;
+    } else {
+      minNumerator = +document.getElementById("numerator").min;
+      maxNumerator = +document.getElementById("numerator").max;
+    }
+    // We only need the minimum denominator, since that's what determines what the steepest possible slope is
+    // (and the steepest positive and negative slope are what tells us what our y-range is)
+    let minDenom;
+    if (currentStage.locked.includes("denominator")) {
+      minDenom = getNumber("denominator");
+    } else {
+      minDenom = +document.getElementById("denominator").min;
+    }
+    let minSlope = minNumerator / minDenom;
+    let maxSlope = maxNumerator / minDenom;
+
+    let minIntercept, maxIntercept;
+    if (currentStage.locked.includes("intercept")) {
+      minIntercept = getNumber("intercept");
+      maxIntercept = minIntercept;
+    } else {
+      minIntercept = +document.getElementById("intercept").min;
+      maxIntercept = +document.getElementById("intercept").max;
+    }
+
+    // If x > 0, then the most positive slope produces the most positive possible y-coordinate,
+    // and the most negative slope produces the most negative possible y-coordinate.
+    // But if x < 0, then the opposite is the case.
+    let steepestSlopeToPositive = maxSlope;
+    let steepestSlopeToNegative = minSlope;
+    if (enemy.x < 0) {
+      steepestSlopeToPositive = minSlope;
+      steepestSlopeToNegative = maxSlope;
+    }
+    minY = Math.max(-FIELD_V_SPAN, Math.ceil(steepestSlopeToNegative * enemy.x + minIntercept));
+    maxY = Math.min(FIELD_V_SPAN, Math.floor(steepestSlopeToPositive * enemy.x + maxIntercept));
+  } while (minY > maxY);
+
+  enemy.y = randomFromIntegerRange(minY, maxY);
+
   enemies.push(enemy);
 }
 
