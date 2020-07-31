@@ -147,6 +147,8 @@ const ENEMY_TYPES = {
     minRadius: 4,
     maxRadius: 8,
     startingHealth: 1,
+    minSpeed: FIELD_H_SPAN * 3 / 4,
+    maxSpeed: FIELD_H_SPAN * 15 / 16,
   },
 };
 
@@ -554,7 +556,7 @@ function describeTarget(event) {
     let dy = fieldY - enemy.y;
     if (dx * dx + dy * dy <= enemy.radius * enemy.radius) {
       // TODO: update to provide more information about the enemy, and maybe be able to handle multiple overlapping enemies
-      message += " with an enemy of radius " + enemy.radius.toFixed(2) + " at (" + enemy.x.toFixed(2) + ", " + enemy.y.toFixed(2) + ")";
+      message += " with an enemy of radius " + enemy.radius.toFixed(2) + " at (" + enemy.x + ", " + enemy.y + ")";
     }
   }
   document.getElementById("mouseover-status").innerHTML = message;
@@ -664,13 +666,21 @@ function spawnEnemies() {
   // TODO: Make sure it's always possible to hit the enemy during stages where some controls are locked!
   // (Also: Ideally, the last enemy before a locking stage should probably spawn somewhere that
   // you can hit it without using TOO extreme a positioning.)
-  enemies.push({
+  let enemy = {
     type: enemyType,
-    radius: enemyType.minRadius + (enemyType.maxRadius - enemyType.minRadius) * Math.random(),
-    x: canvasToFieldX(Math.random() * FIELD_WIDTH),
-    y: canvasToFieldY(Math.random() * FIELD_HEIGHT),
+    radius: randomFromRealRange(enemyType.minRadius, enemyType.maxRadius),
     health: enemyType.startingHealth,
-  });
+    speed: randomFromRealRange(enemyType.minSpeed, enemyType.maxSpeed),
+  };
+  let distanceOfEntry = randomFromIntegerRange(0, Math.floor(enemy.speed));
+  // 50/50 chance of spawning on either the left or the right side
+  if (Math.random() < 0.5) {
+    enemy.x = FIELD_H_SPAN - distanceOfEntry;
+  } else {
+    enemy.x = distanceOfEntry - FIELD_H_SPAN;
+  }
+  enemy.y = randomFromIntegerRange(-FIELD_V_SPAN, FIELD_V_SPAN);
+  enemies.push(enemy);
 }
 
 // Applies any effects the lazor beam has on the given enemy
