@@ -629,7 +629,6 @@ function clickBattlefield() {
       + "In later stages of the game, even if you miss, new enemies will spawn and surviving enemies will advance toward the railway!");
     updateAdvisoryDisplay();
   } else {
-    spawnEnemies();
     if (currentStage.end()) {
       currentStageNumber++;
       currentStage = STAGES[currentStageNumber];
@@ -637,6 +636,7 @@ function clickBattlefield() {
       advisories.push(currentStage.intro);
       updateAdvisoryDisplay();
     }
+    spawnEnemies();
   }
 
   for (controlElementId of CONTROL_ELEMENT_IDS) {
