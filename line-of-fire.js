@@ -715,3 +715,15 @@ function fieldToCanvasX(x) {
 function fieldToCanvasY(y) {
   return FIELD_V_SPAN - y;
 }
+
+// Returns a random number between bound1 and bound2 (bound2 is excluded due to use of Math.random())
+function randomFromRealRange(bound1, bound2) {
+  return bound1 + (bound2 - bound1) * Math.random();
+}
+
+// Returns a random integer which is at least min and at most max.
+// Behavior is unspecified if max is less than min, or if either input isn't an integer.
+function randomFromIntegerRange(min, max) {
+  let numOptions = max - min + 1;
+  return min + Math.floor(Math.random() * numOptions);
+}
