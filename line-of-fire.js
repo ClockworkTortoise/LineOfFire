@@ -94,7 +94,7 @@ const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
 const MAX_ADVISORIES_SHOWN = 10;
 
 // Number of enemies that need to be defeated in the early stages in order to proceed to the next stage
-const BASIC_STAGE_DURATION = 5;
+const BASIC_STAGE_DURATION = 3;
 
 // Data to define the different stages of the game. The meaning of the fields is as follows.
 // intro: The message to show to the player at the start of the stage.
