@@ -141,6 +141,15 @@ const STAGES = [
   },
 ];
 
+// Data to define the different types of enemies in the game
+const ENEMY_TYPES = {
+  runner: {
+    minRadius: 4,
+    maxRadius: 8,
+    startingHealth: 1,
+  },
+};
+
 //
 // BEGIN SECTION: Constants for convenience in referring to things
 //
@@ -650,14 +659,17 @@ function updateEnemies() {
 // Spawn new enemies according to the rules of the current game stage
 function spawnEnemies() {
   // PLACEHOLDER IMPLEMENTATION - just randomly put an enemy somewhere on the battlefield
+  // TODO: choose different types and quantities of enemies depending on the game stage
+  let enemyType = ENEMY_TYPES.runner;
   // TODO: Make sure it's always possible to hit the enemy during stages where some controls are locked!
   // (Also: Ideally, the last enemy before a locking stage should probably spawn somewhere that
   // you can hit it without using TOO extreme a positioning.)
   enemies.push({
-    radius: 4 + 8 * Math.random(),
+    type: enemyType,
+    radius: enemyType.minRadius + (enemyType.maxRadius - enemyType.minRadius) * Math.random(),
     x: canvasToFieldX(Math.random() * FIELD_WIDTH),
     y: canvasToFieldY(Math.random() * FIELD_HEIGHT),
-    health: 1,
+    health: enemyType.startingHealth,
   });
 }
 
