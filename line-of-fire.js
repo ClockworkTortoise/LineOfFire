@@ -150,7 +150,7 @@ const STAGES = [
 // Data to define the different types of enemies in the game
 const ENEMY_TYPES = {
   runner: {
-    minRadiusPixels: 4,
+    minRadiusPixels: 5,
     maxRadiusPixels: 8,
     startingHealth: 1,
     minSpeed: FIELD_H_SPAN * 3 / 4,
