@@ -384,27 +384,6 @@ function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1) {
   ctx.fill();
 }
 
-// begin TODELETE (put here just to help me remember names of constants)
-// // Graphics related to the aiming mechanism depicted in the slope preview
-// // (see function drawSlopePreview for how these are used)
-// const GUIDE_WHEEL_CURVE_RADIUS = 3;
-// const GUIDE_WHEEL_CENTER_SPAN = 4;
-// const GUIDE_TRACK_THICKNESS = 2;
-// const GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER = 3;
-// const GUIDE_FRAME_THICKNESS = 2;
-// const MARGIN_BEYOND_LEFT_GUIDE_WHEELS = 2;
-// const SUPPORT_FRAME_THICKNESS = 10;
-// const PISTON_INNER_THICKNESS = 3;
-// const PISTON_OUTER_THICKNESS = 7;
-// const PIVOT_RADIUS = 3;
-// // Amount of extra space to provide on each side of the slope preview
-// // (so that the mechanism should fit entirely inside the preview canvas)
-// const GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER = GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER + 2 * GUIDE_WHEEL_CURVE_RADIUS + GUIDE_WHEEL_CENTER_SPAN;
-// // Width and height of slope preview canvas
-// // (size is 1 for the center, plus the range and margin on both sides)
-// const SLOPE_PREVIEW_SPAN = AIMING_RANGE + GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER;
-// const SLOPE_PREVIEW_SIZE = 2 * SLOPE_PREVIEW_SPAN + 1;
-// end TODELETE
 function drawSlopePreview() {
   let ctx = document.getElementById("slope-prev").getContext("2d");
   ctx.clearRect(0, 0, SLOPE_PREVIEW_SIZE, SLOPE_PREVIEW_SIZE);
