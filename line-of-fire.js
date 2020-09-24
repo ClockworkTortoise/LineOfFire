@@ -88,7 +88,7 @@ const SLOPE_PREVIEW_SIZE = 2 * SLOPE_PREVIEW_SPAN + 1;
 // (e.g. the y-axis will be labeled with the y-value at every multiple of this)
 const COORD_LABEL_INTERVAL = 50;
 // x-coordinate at which to draw labels on the y-axis
-const Y_AXIS_LABEL_X_COORD = FIELD_H_SPAN + 20;
+const Y_AXIS_LABEL_X_COORD = RIGHT_RAIL_COORD + 10;
 
 // Maximum number of messages to show in the advisory queue at one time
 const MAX_ADVISORIES_SHOWN = 10;
