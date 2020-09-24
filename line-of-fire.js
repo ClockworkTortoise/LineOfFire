@@ -2,14 +2,23 @@
 // BEGIN SECTION: Graphics and game configuration constants
 //
 
+// Number of pixels per point of coordinate on the gameplay grid.
+// For example, an x-coordinate of 3 from the player's perspective
+// would correspond to the point 3 * SCALE pixels to the right of
+// the center of the canvas from a graphics perspective.
+const SCALE = 10;
+
 // Maximum horizontal and vertical coordinate on the battlefield,
 // from an in-game perspective where (0, 0) is the center instead of the upper-left corner
-const FIELD_H_SPAN = 500;
-const FIELD_V_SPAN = 300;
+const FIELD_H_SPAN = 50;
+const FIELD_V_SPAN = 30;
+// Same as above, but in pixel coordinates instead of gameplay coordinates
+const CANVAS_H_SPAN = FIELD_H_SPAN * SCALE;
+const CANVAS_V_SPAN = FIELD_V_SPAN * SCALE;
 // Width and height of battlefield
 // (adding 1 in order to have a 0 coordinate in the center, plus the span on both sides)
-const FIELD_WIDTH = 2 * FIELD_H_SPAN + 1;
-const FIELD_HEIGHT = 2 * FIELD_V_SPAN + 1;
+const CANVAS_WIDTH = 2 * CANVAS_H_SPAN + 1;
+const CANVAS_HEIGHT = 2 * CANVAS_V_SPAN + 1;
 
 // Width of each individual track or crossbar in the railway
 const RAIL_WIDTH = 2;
@@ -17,12 +26,9 @@ const RAIL_WIDTH = 2;
 const RAIL_WHEELSPAN = 20;
 const RAIL_HALF_WHEELSPAN = RAIL_WHEELSPAN / 2;
 
-// X-coordinates of the two rails
-// (I'm not using the conversion functions here because
-// if 1 gameplay-distance unit is changed to something other than 1 pixel,
-// then I want the rail wheelspan to still be in pixels without having to change the code here)
-const LEFT_RAIL_COORD = FIELD_H_SPAN - RAIL_HALF_WHEELSPAN;
-const RIGHT_RAIL_COORD = FIELD_H_SPAN + RAIL_HALF_WHEELSPAN;
+// X-coordinates of the two rails (from a graphics perspective)
+const LEFT_RAIL_COORD = CANVAS_H_SPAN - RAIL_HALF_WHEELSPAN;
+const RIGHT_RAIL_COORD = CANVAS_H_SPAN + RAIL_HALF_WHEELSPAN;
 
 // Configuration for the cross-street in the middle which shows where the horizontal axis is
 const DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER = 20;
@@ -86,7 +92,7 @@ const SLOPE_PREVIEW_SIZE = 2 * SLOPE_PREVIEW_SPAN + 1;
 
 // Interval at which to always draw labels of coordinates
 // (e.g. the y-axis will be labeled with the y-value at every multiple of this)
-const COORD_LABEL_INTERVAL = 50;
+const COORD_LABEL_INTERVAL = 5;
 // x-coordinate at which to draw labels on the y-axis
 const Y_AXIS_LABEL_X_COORD = RIGHT_RAIL_COORD + 10;
 
@@ -144,8 +150,8 @@ const STAGES = [
 // Data to define the different types of enemies in the game
 const ENEMY_TYPES = {
   runner: {
-    minRadius: 4,
-    maxRadius: 8,
+    minRadiusPixels: 4,
+    maxRadiusPixels: 8,
     startingHealth: 1,
     minSpeed: FIELD_H_SPAN * 3 / 4,
     maxSpeed: FIELD_H_SPAN * 15 / 16,
@@ -210,8 +216,8 @@ function initialize() {
   updateAdvisoryDisplay();
 
   let field = document.getElementById("battlefield");
-  field.width = FIELD_WIDTH;
-  field.height = FIELD_HEIGHT;
+  field.width = CANVAS_WIDTH;
+  field.height = CANVAS_HEIGHT;
 
   let numBox = document.getElementById("numerator");
   numBox.min = -AIMING_RANGE;
@@ -219,7 +225,7 @@ function initialize() {
   let denomBox = document.getElementById("denominator");
   denomBox.max = AIMING_RANGE;
   let intcBox = document.getElementById("intercept");
-  let cartRange = canvasToFieldY(0);
+  let cartRange = Math.floor(canvasToFieldY(0));
   intcBox.min = -cartRange;
   intcBox.max = cartRange;
 
@@ -228,7 +234,7 @@ function initialize() {
   numBox.value = 3;
   denomBox.value = 8;
   cartSlope = numBox.value / denomBox.value;
-  intcBox.value = -142;
+  intcBox.value = Math.floor(-0.42 * cartRange);
   cartIntercept = intcBox.value;
   updateFunction();
 
@@ -243,7 +249,7 @@ function initialize() {
 
 function drawBattlefield(includeLazor = true) {
   let ctx = document.getElementById("battlefield").getContext("2d");
-  ctx.clearRect(0, 0, FIELD_WIDTH, FIELD_HEIGHT);
+  ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawTerrain(ctx);
   drawEnemies(ctx);
   drawCart(ctx, includeLazor);
@@ -256,7 +262,7 @@ function drawTerrain(ctx) {
   ctx.lineWidth = 2 * DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER + 1;
   ctx.beginPath();
   ctx.moveTo(0, xAxisCanvasY);
-  ctx.lineTo(FIELD_WIDTH, xAxisCanvasY);
+  ctx.lineTo(CANVAS_WIDTH, xAxisCanvasY);
   ctx.stroke();
   // Borders at edges of road
   ctx.strokeStyle = "white";
@@ -264,10 +270,10 @@ function drawTerrain(ctx) {
   ctx.beginPath();
   let borderY = xAxisCanvasY + DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
   ctx.moveTo(0, borderY);
-  ctx.lineTo(FIELD_WIDTH, borderY);
+  ctx.lineTo(CANVAS_WIDTH, borderY);
   borderY = xAxisCanvasY - DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
   ctx.moveTo(0, borderY);
-  ctx.lineTo(FIELD_WIDTH, borderY);
+  ctx.lineTo(CANVAS_WIDTH, borderY);
   ctx.stroke();
   // Road center line
   ctx.strokeStyle = "#ffff00";
@@ -277,7 +283,7 @@ function drawTerrain(ctx) {
   // (start a bit to the left so the alignment of the dashes
   // relative to the edges of the field doesn't look too artificial)
   ctx.moveTo(-Math.floor(ROAD_CENTER_LINE_DASH_LENGTH / 3), xAxisCanvasY);
-  ctx.lineTo(FIELD_WIDTH, xAxisCanvasY);
+  ctx.lineTo(CANVAS_WIDTH, xAxisCanvasY);
   ctx.stroke();
   ctx.setLineDash([]);
 
@@ -286,13 +292,13 @@ function drawTerrain(ctx) {
   ctx.lineWidth = RAIL_WIDTH;
   ctx.beginPath();
   ctx.moveTo(LEFT_RAIL_COORD, 0);
-  ctx.lineTo(LEFT_RAIL_COORD, FIELD_HEIGHT);
+  ctx.lineTo(LEFT_RAIL_COORD, CANVAS_HEIGHT);
   ctx.stroke();
   ctx.beginPath();
   ctx.moveTo(RIGHT_RAIL_COORD, 0);
-  ctx.lineTo(RIGHT_RAIL_COORD, FIELD_HEIGHT);
+  ctx.lineTo(RIGHT_RAIL_COORD, CANVAS_HEIGHT);
   ctx.stroke();
-  for (let y = 0; y <= FIELD_HEIGHT; y += CROSSBAR_SPACING) {
+  for (let y = 0; y <= CANVAS_HEIGHT; y += CROSSBAR_SPACING) {
     ctx.beginPath();
     ctx.moveTo(CROSSBAR_LEFT_END, y);
     ctx.lineTo(CROSSBAR_RIGHT_END, y);
@@ -303,7 +309,7 @@ function drawTerrain(ctx) {
   ctx.fillStyle = "black";
   ctx.font = "12px Arial";
   let maxYLabel = COORD_LABEL_INTERVAL * Math.floor(canvasToFieldY(0) / COORD_LABEL_INTERVAL);
-  for (let y = maxYLabel; fieldToCanvasY(y) <= FIELD_HEIGHT; y -= COORD_LABEL_INTERVAL) {
+  for (let y = maxYLabel; fieldToCanvasY(y) <= CANVAS_HEIGHT; y -= COORD_LABEL_INTERVAL) {
     // Skip the y=0 label since it's in the x-axis road, making it difficult to make the label easily visible
     if (y === 0) {
       continue;
@@ -319,7 +325,7 @@ function drawEnemies(ctx) {
     // PLACEHOLDER IMPLEMENTATION - we'll probably put a "draw this" function as one of the fields of each enemy type
     ctx.fillStyle = enemy.health > 0 ? "#dd00dd" : "#608060";
     ctx.beginPath();
-    ctx.arc(canvasX, canvasY, enemy.radius, 0, 2 * Math.PI);
+    ctx.arc(canvasX, canvasY, enemy.radiusPixels, 0, 2 * Math.PI);
     ctx.fill();
   }
 }
@@ -342,9 +348,9 @@ function drawCart(ctx, includeLazor) {
     ctx.lineWidth = LAZOR_BEAM_WIDTH;
     ctx.beginPath();
     let leftEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(0) + cartIntercept);
-    let rightEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(FIELD_WIDTH) + cartIntercept);
+    let rightEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(CANVAS_WIDTH) + cartIntercept);
     ctx.moveTo(0, leftEdgeY);
-    ctx.lineTo(FIELD_WIDTH, rightEdgeY);
+    ctx.lineTo(CANVAS_WIDTH, rightEdgeY);
     ctx.stroke();
   }
 
@@ -527,15 +533,13 @@ function updateFunction() {
 
 // Indicates the coordinates (in the game system) of where the mouse is aimed, and any enemies at that location
 function describeTarget(event) {
-  let fieldX = canvasToFieldX(event.offsetX);
-  let fieldY = canvasToFieldY(event.offsetY);
-  let message = "Pointing at: (" + fieldX + ", " + fieldY + ")";
+  let message = "Pointing at: (" + canvasToFieldX(event.offsetX).toFixed(1) + ", " + canvasToFieldY(event.offsetY).toFixed(1) + ")";
   for (enemy of enemies) {
-    let dx = fieldX - enemy.x;
-    let dy = fieldY - enemy.y;
-    if (dx * dx + dy * dy <= enemy.radius * enemy.radius) {
+    let dx = event.offsetX - fieldToCanvasX(enemy.x);
+    let dy = event.offsetY - fieldToCanvasY(enemy.y);
+    if (dx * dx + dy * dy <= enemy.radiusPixels * enemy.radiusPixels) {
       // TODO: update to provide more information about the enemy, and maybe be able to handle multiple overlapping enemies
-      message += " with an enemy of radius " + enemy.radius.toFixed(2) + " at (" + enemy.x + ", " + enemy.y + ")";
+      message += " with an enemy of radius " + canvasToFieldDistance(enemy.radiusPixels).toFixed(2) + " at (" + enemy.x + ", " + enemy.y + ")";
     }
   }
   document.getElementById("mouseover-status").innerHTML = message;
@@ -647,7 +651,7 @@ function spawnEnemies() {
   // you can hit it without using TOO extreme a positioning.)
   let enemy = {
     type: enemyType,
-    radius: randomFromRealRange(enemyType.minRadius, enemyType.maxRadius),
+    radiusPixels: randomFromRealRange(enemyType.minRadiusPixels, enemyType.maxRadiusPixels),
     health: enemyType.startingHealth,
   };
 
@@ -724,7 +728,7 @@ function checkLazorEffects(enemy) {
 // assuming the lazor is pointed along the line indicated by the cartSlope and cartIntercept variables
 function lazorHitsEnemy(enemy) {
   // The lazor touches the enemy if its center line is within this distance of the enemy's center.
-  let distanceLimit = enemy.radius + LAZOR_BEAM_WIDTH / 2;
+  let distanceLimit = canvasToFieldDistance(enemy.radiusPixels + LAZOR_BEAM_WIDTH / 2);
   // The distance from the lazor's center line to the center of the enemy is proportional to this amount.
   let scaledDistance = enemy.y - cartSlope * enemy.x - cartIntercept;
   // Since the proportionality constant is the square root of (1 plus the square of the slope),
@@ -743,16 +747,22 @@ function getNumber(inputId) {
 // Functions to convert between graphics-related canvas coordinates (where (0, 0) is the upper-left corner and y-coordinates increase downward)
 // and gameplay-related battlefield coordinates (where (0, 0) is the center and y-coordinates increase upward)
 function canvasToFieldX(x) {
-  return x - FIELD_H_SPAN;
+  return (x - CANVAS_H_SPAN) / SCALE;
 }
 function canvasToFieldY(y) {
-  return FIELD_V_SPAN - y;
+  return (CANVAS_V_SPAN - y) / SCALE;
+}
+function canvasToFieldDistance(d) {
+  return d / SCALE;
 }
 function fieldToCanvasX(x) {
-  return x + FIELD_H_SPAN;
+  return x * SCALE + CANVAS_H_SPAN;
 }
 function fieldToCanvasY(y) {
-  return FIELD_V_SPAN - y;
+  return CANVAS_V_SPAN - y * SCALE;
+}
+function fieldToCanvasDistance(d) {
+  return d * SCALE;
 }
 
 // Returns a random number between bound1 and bound2 (bound2 is excluded due to use of Math.random())
