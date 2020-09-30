@@ -646,9 +646,6 @@ function spawnEnemies() {
   // PLACEHOLDER IMPLEMENTATION - just randomly put an enemy somewhere on the battlefield
   // TODO: choose different types and quantities of enemies depending on the game stage
   let enemyType = ENEMY_TYPES.runner;
-  // TODO: Make sure it's always possible to hit the enemy during stages where some controls are locked!
-  // (Also: Ideally, the last enemy before a locking stage should probably spawn somewhere that
-  // you can hit it without using TOO extreme a positioning.)
   let enemy = {
     type: enemyType,
     radiusPixels: randomFromRealRange(enemyType.minRadiusPixels, enemyType.maxRadiusPixels),
