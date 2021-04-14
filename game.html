@@ -11,37 +11,50 @@
     <script src="line-of-fire.js"></script>
   </head>
   <body onload="initialize()">
-    <table><tr>
-      <td><canvas
-        id="battlefield"
-        width=400 height=400
-        style="background-color: #a0e0a0"
-        onclick="clickBattlefield()"
-        onmousemove="describeTarget(event)"
-        onmouseleave="undescribeTarget()"
-      ></canvas></td>
-      <td id="advisory-queue">
-        <!--Anything the game wants to tell the player but doesn't want to put in any other area will be inserted here-->
-      </td>
-    </tr></table>
-    <p id="mouseover-status">Not currently pointing at the battlefield</p>
     <table>
       <tr>
-        <td>Vertical Offset:</td>
-        <td><input id="numerator" type="number" value=0 min=-20 max=20 step=1 onchange="changeSlope()"></td>
-        <td rowspan=2><canvas id="slope-prev" width=40 height=40 style="background-color: #503000"></canvas></td>
+        <td colspan=2><canvas
+          id="battlefield"
+          width=400 height=400
+          style="background-color: #a0e0a0"
+          onclick="clickBattlefield()"
+          onmousemove="describeTarget(event)"
+          onmouseleave="undescribeTarget()"
+        ></canvas></td>
+        <td id="advisory-queue" rowspan=3>
+          <!--Anything the game wants to tell the player but doesn't want to put in any other area will be inserted here-->
+        </td>
       </tr>
       <tr>
-        <td>Arm Extension:</td>
-        <td><input id="denominator" type="number" value=1 min=1 max=20 step=1 onchange="changeSlope()"></td>
+        <td id="mouseover-status" colspan=2>
+          Not currently pointing at the battlefield
+        </td>
       </tr>
       <tr>
-        <td>Cart Position:</td>
-        <td><input id="intercept" type="number" value=0 min=-200 max=200 step=1 onchange="changeIntercept()"></td>
-        <td id="equation-prev" style="color:gray">y = 0</td>
-      </tr>
-      <tr>
-        <td><input id="fire-button" type="button" onclick="fireLazor()" value="FIRE!"></td>
+        <td>
+          <table>
+            <tr>
+              <td>Vertical Offset:</td>
+              <td><input id="numerator" type="number" value=0 min=-20 max=20 step=1 onchange="changeSlope()"></td>
+              <td rowspan=2><canvas id="slope-prev" width=40 height=40 style="background-color: #503000"></canvas></td>
+            </tr>
+            <tr>
+              <td>Arm Extension:</td>
+              <td><input id="denominator" type="number" value=1 min=1 max=20 step=1 onchange="changeSlope()"></td>
+            </tr>
+            <tr>
+              <td>Cart Position:</td>
+              <td><input id="intercept" type="number" value=0 min=-200 max=200 step=1 onchange="changeIntercept()"></td>
+              <td id="equation-prev" style="color:gray">y = 0</td>
+            </tr>
+            <tr>
+              <td><input id="fire-button" type="button" onclick="fireLazor()" value="FIRE!"></td>
+            </tr>
+          </table>
+        </td>
+        <td id="enemy-info">
+          <!--This space is reserved for detailed information about enemies (beyond what #mouseover-status shows)-->
+        </td>
       </tr>
     </table>
   </body>
