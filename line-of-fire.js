@@ -6,7 +6,7 @@
 // For example, an x-coordinate of 3 from the player's perspective
 // would correspond to the point 3 * SCALE pixels to the right of
 // the center of the canvas from a graphics perspective.
-const SCALE = 10;
+const SCALE = 8;
 
 // Maximum horizontal and vertical coordinate on the battlefield,
 // from an in-game perspective where (0, 0) is the center instead of the upper-left corner
