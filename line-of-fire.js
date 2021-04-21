@@ -105,6 +105,7 @@ const BASIC_STAGE_DURATION = 3;
 // Data to define the different stages of the game. The meaning of the fields is as follows.
 // intro: The message to show to the player at the start of the stage.
 // safe: If true, the game will not move and spawn enemies unless the player eliminates all the enemies.
+// spawn: A function which will be called every turn to generate a list of enemy types to be spawned.
 // end: A function to determine when to end the stage and move on to the next stage.
 // locked: A list of controls that will NOT be reactivated after showing results, during this stage
 const STAGES = [
@@ -113,6 +114,7 @@ const STAGES = [
     intro: "You are now in game stage 0. The first small monsters are starting to show up one at a time."
       + " You should have no trouble picking them off before they reach the railway.",
     safe: true,
+    spawn: function() { return [ENEMY_TYPES.runner]; },
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
     locked: [],
   },
@@ -123,6 +125,7 @@ const STAGES = [
       + " Fortunately, the monsters are still small and only showing up one at a time,"
       + " so you'll still be able to pick them all off before they reach the railway.",
     safe: true,
+    spawn: function() { return [ENEMY_TYPES.runner]; },
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
     locked: ["intercept"],
   },
@@ -134,6 +137,7 @@ const STAGES = [
       + " The monsters are still small and only showing up one at a time, so you'll still be able to pick them off"
       + " before they reach the railway. We should have the fix in place before things start to get worse.",
     safe: true,
+    spawn: function() { return [ENEMY_TYPES.runner]; },
     end: function() { return stageKills >= BASIC_STAGE_DURATION; },
     locked: ["numerator", "denominator"],
   },
@@ -142,6 +146,8 @@ const STAGES = [
     intro: "You are now in game stage 3. This stage has yet to be fully defined."
       + " Enemies will now spawn even if you miss. This is the last stage of the game for now.",
     safe: false,
+    // TODO: Ensure that it's possible to hit both of these enemies with a single shot
+    spawn: function() { return [ENEMY_TYPES.runner, ENEMY_TYPES.runner]; },
     end: function() { return false; },
     locked: [],
   },
@@ -647,9 +653,13 @@ function updateEnemies() {
 
 // Spawn new enemies according to the rules of the current game stage
 function spawnEnemies() {
-  // PLACEHOLDER IMPLEMENTATION - just randomly put an enemy somewhere on the battlefield
-  // TODO: choose different types and quantities of enemies depending on the game stage
-  let enemyType = ENEMY_TYPES.runner;
+  for (let enemyType of currentStage.spawn()) {
+    spawnEnemy(enemyType);
+  }
+}
+
+// Spawn a single new enemy of the given type
+function spawnEnemy(enemyType) {
   let enemy = {
     type: enemyType,
     radiusPixels: randomFromRealRange(enemyType.minRadiusPixels, enemyType.maxRadiusPixels),
