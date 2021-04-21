@@ -325,7 +325,7 @@ function drawTerrain(ctx) {
 }
 
 function drawEnemies(ctx) {
-  for (enemy of enemies) {
+  for (let enemy of enemies) {
     let canvasX = fieldToCanvasX(enemy.x);
     let canvasY = fieldToCanvasY(enemy.y);
     // PLACEHOLDER IMPLEMENTATION - we'll probably put a "draw this" function as one of the fields of each enemy type
@@ -425,7 +425,7 @@ function drawSlopePreview() {
     rightWheelCenterX - GUIDE_WHEEL_CURVE_RADIUS + 1,
     rightWheelCenterX + GUIDE_WHEEL_CURVE_RADIUS - 1,
   ];
-  for (x of trackXCoords) {
+  for (let x of trackXCoords) {
     ctx.moveTo(x, 0);
     ctx.lineTo(x, SLOPE_PREVIEW_SIZE);
   }
@@ -540,7 +540,7 @@ function updateFunction() {
 // Indicates the coordinates (in the game system) of where the mouse is aimed, and any enemies at that location
 function describeTarget(event) {
   let message = "Pointing at: (" + canvasToFieldX(event.offsetX).toFixed(1) + ", " + canvasToFieldY(event.offsetY).toFixed(1) + ")";
-  for (enemy of enemies) {
+  for (let enemy of enemies) {
     let dx = event.offsetX - fieldToCanvasX(enemy.x);
     let dy = event.offsetY - fieldToCanvasY(enemy.y);
     if (dx * dx + dy * dy <= enemy.radiusPixels * enemy.radiusPixels) {
@@ -589,7 +589,7 @@ function fireLazor() {
     return;
   }
 
-  for (controlElementId of CONTROL_ELEMENT_IDS) {
+  for (let controlElementId of CONTROL_ELEMENT_IDS) {
     document.getElementById(controlElementId).disabled = true;
   }
 
@@ -597,7 +597,7 @@ function fireLazor() {
   cartIntercept = getNumber("intercept");
   cartSlope = getNumber("numerator") / getNumber("denominator");
 
-  for (enemy of enemies) {
+  for (let enemy of enemies) {
     checkLazorEffects(enemy);
   }
 
@@ -632,7 +632,7 @@ function clickBattlefield() {
     spawnEnemies();
   }
 
-  for (controlElementId of CONTROL_ELEMENT_IDS) {
+  for (let controlElementId of CONTROL_ELEMENT_IDS) {
     if (!currentStage.locked.includes(controlElementId)) {
       document.getElementById(controlElementId).disabled = false;
     }
