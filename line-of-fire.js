@@ -740,6 +740,20 @@ function spawnEnemy(enemyType) {
   return enemy;
 }
 
+// Given two objects which have fields named "x" and "y",
+// calculates the y-intercept of a line passing through
+// both points (obj1.x, obj1.y) and (obj2.x, obj2.y).
+// If the two points are the same or lie on a vertical line, returns NaN.
+function calculateIntercept(obj1, obj2) {
+  let run = obj2.x - obj1.x;
+  if (run === 0) {
+    return NaN;
+  }
+  let rise = obj2.y - obj1.y;
+  let slope = rise / run;
+  return obj1.y - slope * obj1.x;
+}
+
 // Applies any effects the lazor beam has on the given enemy
 // (usually reducing health if the lazor hits the enemy)
 function checkLazorEffects(enemy) {
