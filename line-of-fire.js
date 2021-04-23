@@ -106,6 +106,8 @@ const BASIC_STAGE_DURATION = 3;
 // intro: The message to show to the player at the start of the stage.
 // safe: If true, the game will not move and spawn enemies unless the player eliminates all the enemies.
 // spawn: A function which will be called every turn to generate a list of enemy types to be spawned.
+// checkSpawns: A function which, if present, will be called on an array of newly spawned enemies after spawning
+//     in order to fix any issues present (e.g. making sure both enemies can be hit with one shot in stage 3)
 // end: A function to determine when to end the stage and move on to the next stage.
 // locked: A list of controls that will NOT be reactivated after showing results, during this stage
 const STAGES = [
@@ -653,8 +655,13 @@ function updateEnemies() {
 
 // Spawn new enemies according to the rules of the current game stage
 function spawnEnemies() {
+  let spawned = [];
   for (let enemyType of currentStage.spawn()) {
-    spawnEnemy(enemyType);
+    spawned.push(spawnEnemy(enemyType));
+  }
+
+  if (currentStage.checkSpawns) {
+    currentStage.checkSpawns(spawned);
   }
 }
 
