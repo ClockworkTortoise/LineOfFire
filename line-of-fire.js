@@ -148,8 +148,8 @@ const STAGES = [
     intro: "You are now in game stage 3. This stage has yet to be fully defined."
       + " Enemies will now spawn even if you miss. This is the last stage of the game for now.",
     safe: false,
-    // TODO: Ensure that it's possible to hit both of these enemies with a single shot
     spawn: function() { return [ENEMY_TYPES.runner, ENEMY_TYPES.runner]; },
+    checkSpawns: function(spawned) { ensureCombo(spawned[0], spawned[1]); },
     end: function() { return false; },
     locked: [],
   },
@@ -738,6 +738,56 @@ function spawnEnemy(enemyType) {
 
   enemies.push(enemy);
   return enemy;
+}
+
+// Ensures that both of the given enemies can be hit with one shot.
+// If it's already possible to do so, this function simply verifies that,
+// but if not, then it will change their location to make that possible.
+function ensureCombo(enemy1, enemy2) {
+  // If the two enemies are on opposite sides of the cart,
+  // then a straight line between them will definitely intersect the railway
+  // at some point on the battlefield, so we don't need to do anything.
+  if ((enemy1.x >= 0) !== (enemy2.x >= 0)) {
+    return;
+  }
+  // If the two enemies are at the same location,
+  // then any line passing through the smaller will also hit the larger,
+  // so we don't need to do anything to make sure they can both be hit.
+  if (enemy1.x === enemy2.x && enemy1.y === enemy2.y) {
+    return;
+  }
+
+  // If the two enemies are in a vertical line, we have to nudge one of them sideways.
+  if (enemy1.x === enemy2.x) {
+    // Decide which enemy to nudge by flipping a coin
+    let enemyToNudge = randomFromOptions(enemy1, enemy2);
+    // Nudge the chosen enemy one unit farther away from the center.
+    // (Nudging it closer might risk pushing the difficulty higher than we want.)
+    enemyToNudge.x += enemyToNudge.x >= 0 ? 1 : -1;
+  }
+
+  // Now that we know the two enemies are at different x-coordinates,
+  // we can check where a line through their centers would intersect the railway.
+  // If that intersection point is beyond the limits of the battlefield,
+  // we'll randomly nudge one of the enemies' y-coordinates toward the other
+  // until the line between them hits the railway within the battlefield.
+  let b = calculateIntercept(enemy1, enemy2);
+  while (b < -FIELD_V_SPAN || b > FIELD_V_SPAN) {
+    let enemyToNudge = randomFromOptions(enemy1, enemy2);
+    // To determine which way we have to move our randomly chosen enemy,
+    // we need to determine whether it's higher or lower than the other.
+    // Rather than try to figure out whether we've chosen enemy1 or enemy2,
+    // we'll just compare to a point halfway between the two enemies,
+    // since moving toward that midpoint will be the same as moving toward
+    // the other of the two enemies.
+    let vMidpoint = (enemy1.y + enemy2.y) / 2;
+    enemyToNudge.y += enemyToNudge.y >= vMidpoint ? -1 : 1;
+
+    b = calculateIntercept(enemy1, enemy2);
+  }
+
+  // TODO: Consider double-checking if the controls can actually be set to
+  // values that make the LAZOR pass within the margin of error for both enemies
 }
 
 // Given two objects which have fields named "x" and "y",
