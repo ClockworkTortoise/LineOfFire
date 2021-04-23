@@ -185,8 +185,12 @@ var showingResults = false;
 var cartIntercept = 0;
 var cartSlope = 0;
 
-// List of enemies which are currently on the battlefield.
-// This will include their enemy type, current location, and current status (e.g. if a tougher enemy is injured or not).
+// List of enemies which are currently on the battlefield, each with the following fields:
+// type: The type of the enemy, taken as an object from ENEMY_TYPES
+// radiusPixels: Radius of the enemy in canvas units (i.e. graphical pixels)
+// health: The enemy's current health; how many times the enemy still needs to be hit to destroy it
+// speed: How far the enemy moves, measured in battlefield units (i.e. Cartesian grid coordinates)
+// x, y: The coordinates of the center of the enemy, measured in battlefield units
 var enemies = [];
 
 // Messages to communicate with the player about things that happened in the game
