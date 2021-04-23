@@ -658,7 +658,8 @@ function spawnEnemies() {
   }
 }
 
-// Spawn a single new enemy of the given type
+// Spawn a single new enemy of the given type.
+// The spawned enemy will be added to the list of enemies, and also returned from this function.
 function spawnEnemy(enemyType) {
   let enemy = {
     type: enemyType,
@@ -725,6 +726,7 @@ function spawnEnemy(enemyType) {
   enemy.y = randomFromIntegerRange(minY, maxY);
 
   enemies.push(enemy);
+  return enemy;
 }
 
 // Applies any effects the lazor beam has on the given enemy
