@@ -800,3 +800,8 @@ function randomFromIntegerRange(min, max) {
   let numOptions = max - min + 1;
   return min + Math.floor(Math.random() * numOptions);
 }
+
+// Returns a randomly chosen one of its arguments.
+function randomFromOptions(...options) {
+  return options[Math.floor(Math.random() * options.length)];
+}
