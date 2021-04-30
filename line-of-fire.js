@@ -57,11 +57,14 @@ const CANNON_RADIUS = Math.sqrt(CANNON_WIDTH * CANNON_WIDTH + CANNON_LENGTH * CA
 // Positive angle between the direction of the lazor beam
 // and the direction from the center of the cart to a corner of the cannon
 const CANNON_CORNER_ANGLE = Math.atan2(CANNON_WIDTH, CANNON_LENGTH);
+// Thickness of ALL lines used in the on-battlefield firing preview
+const CART_PREVIEW_LINE_WIDTH = 2;
 
 // Colors and styles that we want to use in multiple places
 const LAZOR_COLOR = "#f00000";
 const CANNON_OUTLINE = "black";
 const CANNON_FILL = "#a0a0a0";
+const CART_PREVIEW_COLOR = "#c03800";
 
 // Maximum absolute value of numerator and denominator of slope.
 // Numerator ranges from negative of this value to this value.
@@ -259,12 +262,15 @@ function initialize() {
   drawSlopePreview();
 }
 
-function drawBattlefield(includeLazor = true) {
+function drawBattlefield(includeLazor = true, includePreview = false) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawTerrain(ctx);
   drawEnemies(ctx);
   drawCart(ctx, includeLazor);
+  if (includePreview) {
+    drawCart(ctx, true, true);
+  }
 }
 
 function drawTerrain(ctx) {
@@ -342,42 +348,59 @@ function drawEnemies(ctx) {
   }
 }
 
-function drawCart(ctx, includeLazor) {
-  // Cart base
-  ctx.strokeStyle = "#101000";
-  ctx.lineWidth = CART_BACKGROUND_BORDER_WIDTH;
-  ctx.fillStyle = "#503000";
+function drawCart(ctx, includeLazor, preview = false) {
+  // Turn on dotted line effect if this is a firing preview
+  if (preview) {
+    ctx.setLineDash([6, 4]);
+  }
+
+  // Variables for general location of the cart,
+  // depending on whether this is a preview or the current location
   let cartCenterX = fieldToCanvasX(0);
+  let cartCenterY = fieldToCanvasY(preview ? getNumber("intercept") : cartIntercept);
+  let slope = preview ? getNumber("numerator") / getNumber("denominator") : cartSlope;
+  let intc = preview ? getNumber("intercept") : cartIntercept;
+
+  // Cart base
+  ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : "#101000";
+  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : CART_BACKGROUND_BORDER_WIDTH;
+  ctx.fillStyle = "#503000";
   let cartLeftX = cartCenterX - CART_BASE_WIDTH / 2;
-  let cartCenterY = fieldToCanvasY(cartIntercept);
   let cartTopY = cartCenterY - CART_BASE_HEIGHT / 2;
-  ctx.fillRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
+  if (!preview) {
+    ctx.fillRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
+  }
   ctx.strokeRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
 
   // Lazor beam
   if (includeLazor) {
-    ctx.strokeStyle = LAZOR_COLOR;
-    ctx.lineWidth = LAZOR_BEAM_WIDTH;
+    ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : LAZOR_COLOR;
+    ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : LAZOR_BEAM_WIDTH;
     ctx.beginPath();
-    let leftEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(0) + cartIntercept);
-    let rightEdgeY = fieldToCanvasY(cartSlope * canvasToFieldX(CANVAS_WIDTH) + cartIntercept);
+    let leftEdgeY = fieldToCanvasY(slope * canvasToFieldX(0) + intc);
+    let rightEdgeY = fieldToCanvasY(slope * canvasToFieldX(CANVAS_WIDTH) + intc);
     ctx.moveTo(0, leftEdgeY);
     ctx.lineTo(CANVAS_WIDTH, rightEdgeY);
     ctx.stroke();
   }
 
   // Lazor cannon
-  drawCannonBarrel(ctx, cartCenterX, cartCenterY, cartSlope);
+  drawCannonBarrel(ctx, cartCenterX, cartCenterY, slope, 1, preview);
+
+  // Turn off dotted line effect
+  if (preview) {
+    ctx.setLineDash([]);
+  }
 }
 
 // Code for drawing the cannon barrel (used in both the battlefield and the firing angle preview).
 // Scaling factor is used to make the firing angle preview use a different size scale;
 // a scalingFactor of 1 is assumed to be the size that the cannon is drawn on the battlefield.
-function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1) {
+function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1, preview = false) {
   let scaledRadius = CANNON_RADIUS * scalingFactor;
 
-  ctx.strokeStyle = CANNON_OUTLINE;
-  ctx.lineWidth = CART_FOREGROUND_BORDER_WIDTH;
+  ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : CANNON_OUTLINE;
+  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : CART_FOREGROUND_BORDER_WIDTH;
   ctx.fillStyle = CANNON_FILL;
 
   // Lazor angle is negative arctangent because the slope is in gameplay coordinates,
@@ -399,7 +422,9 @@ function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1) {
   ctx.lineTo(centerX - offsetXCW, centerY - offsetYCW);
   ctx.closePath();
   ctx.stroke();
-  ctx.fill();
+  if (!preview) {
+    ctx.fill();
+  }
 }
 
 function drawSlopePreview() {
@@ -504,16 +529,18 @@ function drawGuideWheel(ctx, x, y) {
   ctx.fill();
 }
 
-// Changes the firing angle preview and the linear-function equivalent to reflect changes
-// to the numerator or denominator of the slope
+// Changes the firing angle preview, the linear-function equivalent, and the on-battlefield preview
+// to reflect changes to the numerator or denominator of the slope
 function changeSlope() {
   updateFunction();
   drawSlopePreview();
+  drawBattlefield(false, true);
 }
 
-// Changes the linear-function equivalent to reflect changes to the intercept
+// Changes the linear-function equivalent and the on-battlefield preview to reflect changes to the intercept
 function changeIntercept() {
   updateFunction();
+  drawBattlefield(false, true);
 }
 
 // Updates the linear function equivalent to reflect the current values of the slope and intercept inputs
