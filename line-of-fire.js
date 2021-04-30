@@ -247,7 +247,7 @@ function initialize() {
   denomBox.value = 8;
   cartSlope = numBox.value / denomBox.value;
   intcBox.value = Math.floor(-0.42 * cartRange);
-  cartIntercept = intcBox.value;
+  cartIntercept = +intcBox.value;
   updateFunction();
 
   let slopePrev = document.getElementById("slope-prev");
