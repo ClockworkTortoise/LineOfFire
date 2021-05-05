@@ -708,6 +708,37 @@ function spawnEnemy(enemyType) {
   // Choose speed and x-position until we have an x-position where the lazor can hit the enemy at SOME y.
   // TODO: Consider whether this needs to be modified to ensure the enemy doesn't require an unhittable slope
   //       (For example, if the slope needs to be approximately 13.5, you can't get closer than 13 or 14 if the controls have a range of 20)
+
+  // First, we do some calculations that don't change depending on the random parts of the spawning process.
+  let minNumerator, maxNumerator;
+  if (currentStage.locked.includes("numerator")) {
+    minNumerator = getNumber("numerator");
+    maxNumerator = minNumerator;
+  } else {
+    minNumerator = +document.getElementById("numerator").min;
+    maxNumerator = +document.getElementById("numerator").max;
+  }
+  // We only need the minimum denominator, since that's what determines what the steepest possible slope is
+  // (and the steepest positive and negative slope are what tells us what our y-range is)
+  let minDenom;
+  if (currentStage.locked.includes("denominator")) {
+    minDenom = getNumber("denominator");
+  } else {
+    minDenom = +document.getElementById("denominator").min;
+  }
+  let minSlope = minNumerator / minDenom;
+  let maxSlope = maxNumerator / minDenom;
+
+  let minIntercept, maxIntercept;
+  if (currentStage.locked.includes("intercept")) {
+    minIntercept = getNumber("intercept");
+    maxIntercept = minIntercept;
+  } else {
+    minIntercept = +document.getElementById("intercept").min;
+    maxIntercept = +document.getElementById("intercept").max;
+  }
+
+  // Now that we have the values calculated above, we'll randomize the enemy, then repeat if it can't be hit.
   let minY, maxY;
   do {
     enemy.speed = randomFromRealRange(enemyType.minSpeed, enemyType.maxSpeed);
@@ -718,34 +749,6 @@ function spawnEnemy(enemyType) {
       enemy.x = FIELD_H_SPAN - distanceOfEntry;
     } else {
       enemy.x = distanceOfEntry - FIELD_H_SPAN;
-    }
-
-    let minNumerator, maxNumerator;
-    if (currentStage.locked.includes("numerator")) {
-      minNumerator = getNumber("numerator");
-      maxNumerator = minNumerator;
-    } else {
-      minNumerator = +document.getElementById("numerator").min;
-      maxNumerator = +document.getElementById("numerator").max;
-    }
-    // We only need the minimum denominator, since that's what determines what the steepest possible slope is
-    // (and the steepest positive and negative slope are what tells us what our y-range is)
-    let minDenom;
-    if (currentStage.locked.includes("denominator")) {
-      minDenom = getNumber("denominator");
-    } else {
-      minDenom = +document.getElementById("denominator").min;
-    }
-    let minSlope = minNumerator / minDenom;
-    let maxSlope = maxNumerator / minDenom;
-
-    let minIntercept, maxIntercept;
-    if (currentStage.locked.includes("intercept")) {
-      minIntercept = getNumber("intercept");
-      maxIntercept = minIntercept;
-    } else {
-      minIntercept = +document.getElementById("intercept").min;
-      maxIntercept = +document.getElementById("intercept").max;
     }
 
     // If x > 0, then the most positive slope produces the most positive possible y-coordinate,
