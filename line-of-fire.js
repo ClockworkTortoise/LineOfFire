@@ -751,7 +751,7 @@ function spawnEnemy(enemyType) {
       enemy.x = distanceOfEntry - FIELD_H_SPAN;
     }
 
-    // If x > 0, then the most positive slope produces the most positive possible y-coordinate,
+    // If x > 0, then the most positive slope produces the most positive possible y-coordinate for the spawned enemy,
     // and the most negative slope produces the most negative possible y-coordinate.
     // But if x < 0, then the opposite is the case.
     let steepestSlopeToPositive = maxSlope;
