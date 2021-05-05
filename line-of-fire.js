@@ -21,44 +21,44 @@ const CANVAS_WIDTH = 2 * CANVAS_H_SPAN + 1;
 const CANVAS_HEIGHT = 2 * CANVAS_V_SPAN + 1;
 
 // Width of each individual track or crossbar in the railway
-const RAIL_WIDTH = 2;
+const RAIL_WIDTH_PIXELS = 2;
 // Distance between the two rails of the railway
-const RAIL_WHEELSPAN = 20;
-const RAIL_HALF_WHEELSPAN = RAIL_WHEELSPAN / 2;
+const RAIL_WHEELSPAN_PIXELS = 20;
+const RAIL_HALF_WHEELSPAN_PIXELS = RAIL_WHEELSPAN_PIXELS / 2;
 
 // X-coordinates of the two rails (from a graphics perspective)
-const LEFT_RAIL_COORD = CANVAS_H_SPAN - RAIL_HALF_WHEELSPAN;
-const RIGHT_RAIL_COORD = CANVAS_H_SPAN + RAIL_HALF_WHEELSPAN;
+const LEFT_RAIL_COORD_PIXELS = CANVAS_H_SPAN - RAIL_HALF_WHEELSPAN_PIXELS;
+const RIGHT_RAIL_COORD_PIXELS = CANVAS_H_SPAN + RAIL_HALF_WHEELSPAN_PIXELS;
 
 // Configuration for the cross-street in the middle which shows where the horizontal axis is
-const DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER = 20;
-const ROAD_BORDER_THICKNESS = 5;
-const ROAD_CENTER_LINE_THICKNESS = 3;
-const ROAD_CENTER_LINE_DASH_LENGTH = 15;
-const ROAD_CENTER_LINE_DASH_GAP = 5;
+const DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER_PIXELS = 20;
+const ROAD_BORDER_THICKNESS_PIXELS = 5;
+const ROAD_CENTER_LINE_THICKNESS_PIXELS = 3;
+const ROAD_CENTER_LINE_DASH_LENGTH_PIXELS = 15;
+const ROAD_CENTER_LINE_DASH_GAP_PIXELS = 5;
 
 // Sizing values relating to the crossbars in the railway
-const CROSSBAR_SPACING = 10;
-const CROSSBAR_OVERSHOOT = 3;
-const CROSSBAR_LEFT_END = LEFT_RAIL_COORD - CROSSBAR_OVERSHOOT;
-const CROSSBAR_RIGHT_END = RIGHT_RAIL_COORD + CROSSBAR_OVERSHOOT;
+const CROSSBAR_SPACING_PIXELS = 10;
+const CROSSBAR_OVERSHOOT_PIXELS = 3;
+const CROSSBAR_LEFT_END_PIXELS = LEFT_RAIL_COORD_PIXELS - CROSSBAR_OVERSHOOT_PIXELS;
+const CROSSBAR_RIGHT_END_PIXELS = RIGHT_RAIL_COORD_PIXELS + CROSSBAR_OVERSHOOT_PIXELS;
 
 // Sizes of cart components
-const CART_BACKGROUND_BORDER_WIDTH = 1;
-const CART_FOREGROUND_BORDER_WIDTH = 2;
-const CART_BASE_WIDTH = 30;
-const CART_BASE_HEIGHT = 50;
-const LAZOR_BEAM_WIDTH = 3;
+const CART_BACKGROUND_BORDER_WIDTH_PIXELS = 1;
+const CART_FOREGROUND_BORDER_WIDTH_PIXELS = 2;
+const CART_BASE_WIDTH_PIXELS = 30;
+const CART_BASE_HEIGHT_PIXELS = 50;
+const LAZOR_BEAM_WIDTH_PIXELS = 3;
 // Total width and height of cannon (not just distance from center)
-const CANNON_WIDTH = 12;
-const CANNON_LENGTH = 48;
+const CANNON_WIDTH_PIXELS = 12;
+const CANNON_LENGTH_PIXELS = 48;
 // Distance from the center of the cart to a corner of the cannon
-const CANNON_RADIUS = Math.sqrt(CANNON_WIDTH * CANNON_WIDTH + CANNON_LENGTH * CANNON_LENGTH) / 2;
+const CANNON_RADIUS_PIXELS = Math.sqrt(CANNON_WIDTH_PIXELS * CANNON_WIDTH_PIXELS + CANNON_LENGTH_PIXELS * CANNON_LENGTH_PIXELS) / 2;
 // Positive angle between the direction of the lazor beam
 // and the direction from the center of the cart to a corner of the cannon
-const CANNON_CORNER_ANGLE = Math.atan2(CANNON_WIDTH, CANNON_LENGTH);
+const CANNON_CORNER_ANGLE = Math.atan2(CANNON_WIDTH_PIXELS, CANNON_LENGTH_PIXELS);
 // Thickness of ALL lines used in the on-battlefield firing preview
-const CART_PREVIEW_LINE_WIDTH = 2;
+const CART_PREVIEW_LINE_WIDTH_PIXELS = 2;
 
 // Colors and styles that we want to use in multiple places
 const LAZOR_COLOR = "#f00000";
@@ -73,31 +73,31 @@ const AIMING_RANGE = 20;
 
 // Graphics related to the aiming mechanism depicted in the slope preview
 // (see function drawSlopePreview for how these are used)
-const GUIDE_WHEEL_CURVE_RADIUS = 3;
-const GUIDE_WHEEL_CENTER_SPAN = 4;
-const GUIDE_TRACK_THICKNESS = 1;
-const GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER = 3;
-const GUIDE_FRAME_THICKNESS = 2;
-const MARGIN_BEYOND_LEFT_GUIDE_WHEELS = 2;
-const SUPPORT_FRAME_THICKNESS = 20;
-const PISTON_INNER_THICKNESS = 3;
-const PISTON_OUTER_THICKNESS = 7;
-const PIVOT_RADIUS = 3;
+const GUIDE_WHEEL_CURVE_RADIUS_PIXELS = 3;
+const GUIDE_WHEEL_CENTER_SPAN_PIXELS = 4;
+const GUIDE_TRACK_THICKNESS_PIXELS = 1;
+const GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER_PIXELS = 3;
+const GUIDE_FRAME_THICKNESS_PIXELS = 2;
+const MARGIN_BEYOND_LEFT_GUIDE_WHEELS_PIXELS = 2;
+const SUPPORT_FRAME_THICKNESS_PIXELS = 20;
+const PISTON_INNER_THICKNESS_PIXELS = 3;
+const PISTON_OUTER_THICKNESS_PIXELS = 7;
+const PIVOT_RADIUS_PIXELS = 3;
 // How much to scale up the lazor beam and the cannon barrel
 const SLOPE_PREVIEW_SCALE_FACTOR = 2.0;
 // Amount of extra space to provide on each side of the slope preview
 // (so that the mechanism should fit entirely inside the preview canvas)
-const GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER = GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER + 2 * GUIDE_WHEEL_CURVE_RADIUS + GUIDE_WHEEL_CENTER_SPAN;
+const GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER_PIXELS = GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER_PIXELS + 2 * GUIDE_WHEEL_CURVE_RADIUS_PIXELS + GUIDE_WHEEL_CENTER_SPAN_PIXELS;
 // Width and height of slope preview canvas
 // (size is 1 for the center, plus the range and margin on both sides)
-const SLOPE_PREVIEW_SPAN = AIMING_RANGE + GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER;
-const SLOPE_PREVIEW_SIZE = 2 * SLOPE_PREVIEW_SPAN + 1;
+const SLOPE_PREVIEW_CANVAS_SPAN = AIMING_RANGE + GUIDE_WHEEL_MAX_DIST_FROM_PISTON_CENTER_PIXELS;
+const SLOPE_PREVIEW_CANVAS_SIZE = 2 * SLOPE_PREVIEW_CANVAS_SPAN + 1;
 
 // Interval at which to always draw labels of coordinates
 // (e.g. the y-axis will be labeled with the y-value at every multiple of this)
 const COORD_LABEL_INTERVAL = 5;
 // x-coordinate at which to draw labels on the y-axis
-const Y_AXIS_LABEL_X_COORD = RIGHT_RAIL_COORD + 10;
+const Y_AXIS_LABEL_X_COORD_PIXELS = RIGHT_RAIL_COORD_PIXELS + 10;
 
 // Maximum number of messages to show in the advisory queue at one time
 const MAX_ADVISORIES_SHOWN = 10;
@@ -254,8 +254,8 @@ function initialize() {
   updateFunction();
 
   let slopePrev = document.getElementById("slope-prev");
-  slopePrev.width = SLOPE_PREVIEW_SIZE;
-  slopePrev.height = SLOPE_PREVIEW_SIZE;
+  slopePrev.width = SLOPE_PREVIEW_CANVAS_SIZE;
+  slopePrev.height = SLOPE_PREVIEW_CANVAS_SIZE;
 
   spawnEnemies();
   drawBattlefield(false);
@@ -277,49 +277,49 @@ function drawTerrain(ctx) {
   // Cross street indicating location of horizontal axis
   let xAxisCanvasY = fieldToCanvasY(0);
   ctx.strokeStyle = "black";
-  ctx.lineWidth = 2 * DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER + 1;
+  ctx.lineWidth = 2 * DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER_PIXELS + 1;
   ctx.beginPath();
   ctx.moveTo(0, xAxisCanvasY);
   ctx.lineTo(CANVAS_WIDTH, xAxisCanvasY);
   ctx.stroke();
   // Borders at edges of road
   ctx.strokeStyle = "white";
-  ctx.lineWidth = ROAD_BORDER_THICKNESS;
+  ctx.lineWidth = ROAD_BORDER_THICKNESS_PIXELS;
   ctx.beginPath();
-  let borderY = xAxisCanvasY + DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
-  ctx.moveTo(0, borderY);
-  ctx.lineTo(CANVAS_WIDTH, borderY);
-  borderY = xAxisCanvasY - DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER;
-  ctx.moveTo(0, borderY);
-  ctx.lineTo(CANVAS_WIDTH, borderY);
+  let borderCanvasY = xAxisCanvasY + DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER_PIXELS;
+  ctx.moveTo(0, borderCanvasY);
+  ctx.lineTo(CANVAS_WIDTH, borderCanvasY);
+  borderCanvasY = xAxisCanvasY - DIST_FROM_ROAD_CENTER_TO_CENTER_OF_ROAD_BORDER_PIXELS;
+  ctx.moveTo(0, borderCanvasY);
+  ctx.lineTo(CANVAS_WIDTH, borderCanvasY);
   ctx.stroke();
   // Road center line
   ctx.strokeStyle = "#ffff00";
-  ctx.lineWidth = ROAD_CENTER_LINE_THICKNESS;
-  ctx.setLineDash([ROAD_CENTER_LINE_DASH_LENGTH, ROAD_CENTER_LINE_DASH_GAP]);
+  ctx.lineWidth = ROAD_CENTER_LINE_THICKNESS_PIXELS;
+  ctx.setLineDash([ROAD_CENTER_LINE_DASH_LENGTH_PIXELS, ROAD_CENTER_LINE_DASH_GAP_PIXELS]);
   ctx.beginPath();
   // (start a bit to the left so the alignment of the dashes
   // relative to the edges of the field doesn't look too artificial)
-  ctx.moveTo(-Math.floor(ROAD_CENTER_LINE_DASH_LENGTH / 3), xAxisCanvasY);
+  ctx.moveTo(-Math.floor(ROAD_CENTER_LINE_DASH_LENGTH_PIXELS / 3), xAxisCanvasY);
   ctx.lineTo(CANVAS_WIDTH, xAxisCanvasY);
   ctx.stroke();
   ctx.setLineDash([]);
 
   // Railway and height labels
   ctx.strokeStyle = "#404040";
-  ctx.lineWidth = RAIL_WIDTH;
+  ctx.lineWidth = RAIL_WIDTH_PIXELS;
   ctx.beginPath();
-  ctx.moveTo(LEFT_RAIL_COORD, 0);
-  ctx.lineTo(LEFT_RAIL_COORD, CANVAS_HEIGHT);
+  ctx.moveTo(LEFT_RAIL_COORD_PIXELS, 0);
+  ctx.lineTo(LEFT_RAIL_COORD_PIXELS, CANVAS_HEIGHT);
   ctx.stroke();
   ctx.beginPath();
-  ctx.moveTo(RIGHT_RAIL_COORD, 0);
-  ctx.lineTo(RIGHT_RAIL_COORD, CANVAS_HEIGHT);
+  ctx.moveTo(RIGHT_RAIL_COORD_PIXELS, 0);
+  ctx.lineTo(RIGHT_RAIL_COORD_PIXELS, CANVAS_HEIGHT);
   ctx.stroke();
-  for (let y = 0; y <= CANVAS_HEIGHT; y += CROSSBAR_SPACING) {
+  for (let y = 0; y <= CANVAS_HEIGHT; y += CROSSBAR_SPACING_PIXELS) {
     ctx.beginPath();
-    ctx.moveTo(CROSSBAR_LEFT_END, y);
-    ctx.lineTo(CROSSBAR_RIGHT_END, y);
+    ctx.moveTo(CROSSBAR_LEFT_END_PIXELS, y);
+    ctx.lineTo(CROSSBAR_RIGHT_END_PIXELS, y);
     ctx.stroke();
   }
   ctx.textAlign = "left";
@@ -332,7 +332,7 @@ function drawTerrain(ctx) {
     if (y === 0) {
       continue;
     }
-    ctx.fillText(y, Y_AXIS_LABEL_X_COORD, fieldToCanvasY(y));
+    ctx.fillText(y, Y_AXIS_LABEL_X_COORD_PIXELS, fieldToCanvasY(y));
   }
 }
 
@@ -356,36 +356,36 @@ function drawCart(ctx, includeLazor, preview = false) {
 
   // Variables for general location of the cart,
   // depending on whether this is a preview or the current location
-  let cartCenterX = fieldToCanvasX(0);
-  let cartCenterY = fieldToCanvasY(preview ? getNumber("intercept") : cartIntercept);
+  let cartCenterCanvasX = fieldToCanvasX(0);
+  let cartCenterCanvasY = fieldToCanvasY(preview ? getNumber("intercept") : cartIntercept);
   let slope = preview ? getNumber("numerator") / getNumber("denominator") : cartSlope;
   let intc = preview ? getNumber("intercept") : cartIntercept;
 
   // Cart base
   ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : "#101000";
-  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : CART_BACKGROUND_BORDER_WIDTH;
+  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH_PIXELS : CART_BACKGROUND_BORDER_WIDTH_PIXELS;
   ctx.fillStyle = "#503000";
-  let cartLeftX = cartCenterX - CART_BASE_WIDTH / 2;
-  let cartTopY = cartCenterY - CART_BASE_HEIGHT / 2;
+  let cartLeftCanvasX = cartCenterCanvasX - CART_BASE_WIDTH_PIXELS / 2;
+  let cartTopCanvasY = cartCenterCanvasY - CART_BASE_HEIGHT_PIXELS / 2;
   if (!preview) {
-    ctx.fillRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
+    ctx.fillRect(cartLeftCanvasX, cartTopCanvasY, CART_BASE_WIDTH_PIXELS, CART_BASE_HEIGHT_PIXELS);
   }
-  ctx.strokeRect(cartLeftX, cartTopY, CART_BASE_WIDTH, CART_BASE_HEIGHT);
+  ctx.strokeRect(cartLeftCanvasX, cartTopCanvasY, CART_BASE_WIDTH_PIXELS, CART_BASE_HEIGHT_PIXELS);
 
   // Lazor beam
   if (includeLazor) {
     ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : LAZOR_COLOR;
-    ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : LAZOR_BEAM_WIDTH;
+    ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH_PIXELS : LAZOR_BEAM_WIDTH_PIXELS;
     ctx.beginPath();
-    let leftEdgeY = fieldToCanvasY(slope * canvasToFieldX(0) + intc);
-    let rightEdgeY = fieldToCanvasY(slope * canvasToFieldX(CANVAS_WIDTH) + intc);
-    ctx.moveTo(0, leftEdgeY);
-    ctx.lineTo(CANVAS_WIDTH, rightEdgeY);
+    let leftEdgeCanvasY = fieldToCanvasY(slope * canvasToFieldX(0) + intc);
+    let rightEdgeCanvasY = fieldToCanvasY(slope * canvasToFieldX(CANVAS_WIDTH) + intc);
+    ctx.moveTo(0, leftEdgeCanvasY);
+    ctx.lineTo(CANVAS_WIDTH, rightEdgeCanvasY);
     ctx.stroke();
   }
 
   // Lazor cannon
-  drawCannonBarrel(ctx, cartCenterX, cartCenterY, slope, 1, preview);
+  drawCannonBarrel(ctx, cartCenterCanvasX, cartCenterCanvasY, slope, 1, preview);
 
   // Turn off dotted line effect
   if (preview) {
@@ -396,11 +396,11 @@ function drawCart(ctx, includeLazor, preview = false) {
 // Code for drawing the cannon barrel (used in both the battlefield and the firing angle preview).
 // Scaling factor is used to make the firing angle preview use a different size scale;
 // a scalingFactor of 1 is assumed to be the size that the cannon is drawn on the battlefield.
-function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1, preview = false) {
-  let scaledRadius = CANNON_RADIUS * scalingFactor;
+function drawCannonBarrel(ctx, centerCanvasX, centerCanvasY, slope, scalingFactor = 1, preview = false) {
+  let scaledRadiusPixels = CANNON_RADIUS_PIXELS * scalingFactor;
 
   ctx.strokeStyle = preview ? CART_PREVIEW_COLOR : CANNON_OUTLINE;
-  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH : CART_FOREGROUND_BORDER_WIDTH;
+  ctx.lineWidth = preview ? CART_PREVIEW_LINE_WIDTH_PIXELS : CART_FOREGROUND_BORDER_WIDTH_PIXELS;
   ctx.fillStyle = CANNON_FILL;
 
   // Lazor angle is negative arctangent because the slope is in gameplay coordinates,
@@ -409,17 +409,17 @@ function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1, previ
   let lazorAngle = -Math.atan(slope);
   // The corner of the lazor cannon that's clockwise (CW) from the lazor beam on the same side
   let cornerAngleCW = lazorAngle - CANNON_CORNER_ANGLE;
-  let offsetXCW = scaledRadius * Math.cos(cornerAngleCW);
-  let offsetYCW = scaledRadius * Math.sin(cornerAngleCW);
+  let offsetCanvasXCW = scaledRadiusPixels * Math.cos(cornerAngleCW);
+  let offsetCanvasYCW = scaledRadiusPixels * Math.sin(cornerAngleCW);
   // The corner of the lazor cannon that's counterclockwise (CCW) from the lazor beam on the same side
   let cornerAngleCCW = lazorAngle + CANNON_CORNER_ANGLE;
-  let offsetXCCW = scaledRadius * Math.cos(cornerAngleCCW);
-  let offsetYCCW = scaledRadius * Math.sin(cornerAngleCCW);
+  let offsetCanvasXCCW = scaledRadiusPixels * Math.cos(cornerAngleCCW);
+  let offsetCanvasYCCW = scaledRadiusPixels * Math.sin(cornerAngleCCW);
   ctx.beginPath();
-  ctx.moveTo(centerX + offsetXCCW, centerY + offsetYCCW);
-  ctx.lineTo(centerX + offsetXCW, centerY + offsetYCW);
-  ctx.lineTo(centerX - offsetXCCW, centerY - offsetYCCW);
-  ctx.lineTo(centerX - offsetXCW, centerY - offsetYCW);
+  ctx.moveTo(centerCanvasX + offsetCanvasXCCW, centerCanvasY + offsetCanvasYCCW);
+  ctx.lineTo(centerCanvasX + offsetCanvasXCW, centerCanvasY + offsetCanvasYCW);
+  ctx.lineTo(centerCanvasX - offsetCanvasXCCW, centerCanvasY - offsetCanvasYCCW);
+  ctx.lineTo(centerCanvasX - offsetCanvasXCW, centerCanvasY - offsetCanvasYCW);
   ctx.closePath();
   ctx.stroke();
   if (!preview) {
@@ -429,102 +429,102 @@ function drawCannonBarrel(ctx, centerX, centerY, slope, scalingFactor = 1, previ
 
 function drawSlopePreview() {
   let ctx = document.getElementById("slope-prev").getContext("2d");
-  ctx.clearRect(0, 0, SLOPE_PREVIEW_SIZE, SLOPE_PREVIEW_SIZE);
+  ctx.clearRect(0, 0, SLOPE_PREVIEW_CANVAS_SIZE, SLOPE_PREVIEW_CANVAS_SIZE);
   let num = getNumber("numerator")
   let denom = getNumber("denominator");
   let slope = num / denom;
 
-  let pistonCenterY = SLOPE_PREVIEW_SPAN - num;
+  let pistonCenterCanvasY = SLOPE_PREVIEW_CANVAS_SPAN - num;
 
   // Guide wheels
-  let leftWheelCenterX = MARGIN_BEYOND_LEFT_GUIDE_WHEELS + GUIDE_WHEEL_CURVE_RADIUS;
-  let rightWheelCenterX = SLOPE_PREVIEW_SPAN - GUIDE_WHEEL_CURVE_RADIUS;
-  let upperWheelOriginY = pistonCenterY - GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER - GUIDE_WHEEL_CURVE_RADIUS;
-  let lowerWheelOriginY = pistonCenterY + GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER + GUIDE_WHEEL_CURVE_RADIUS + GUIDE_WHEEL_CENTER_SPAN;
-  drawGuideWheel(ctx, leftWheelCenterX, upperWheelOriginY);
-  drawGuideWheel(ctx, leftWheelCenterX, lowerWheelOriginY);
-  drawGuideWheel(ctx, rightWheelCenterX, upperWheelOriginY);
-  drawGuideWheel(ctx, rightWheelCenterX, lowerWheelOriginY);
+  let leftWheelCenterCanvasX = MARGIN_BEYOND_LEFT_GUIDE_WHEELS_PIXELS + GUIDE_WHEEL_CURVE_RADIUS_PIXELS;
+  let rightWheelCenterCanvasX = SLOPE_PREVIEW_CANVAS_SPAN - GUIDE_WHEEL_CURVE_RADIUS_PIXELS;
+  let upperWheelOriginCanvasY = pistonCenterCanvasY - GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER_PIXELS - GUIDE_WHEEL_CURVE_RADIUS_PIXELS;
+  let lowerWheelOriginCanvasY = pistonCenterCanvasY + GUIDE_WHEEL_SPACING_FROM_PISTON_CENTER_PIXELS + GUIDE_WHEEL_CURVE_RADIUS_PIXELS + GUIDE_WHEEL_CENTER_SPAN_PIXELS;
+  drawGuideWheel(ctx, leftWheelCenterCanvasX, upperWheelOriginCanvasY);
+  drawGuideWheel(ctx, leftWheelCenterCanvasX, lowerWheelOriginCanvasY);
+  drawGuideWheel(ctx, rightWheelCenterCanvasX, upperWheelOriginCanvasY);
+  drawGuideWheel(ctx, rightWheelCenterCanvasX, lowerWheelOriginCanvasY);
 
   // Tracks holding guide wheels
   ctx.strokeStyle = "#909090";
-  ctx.lineWidth = GUIDE_TRACK_THICKNESS;
+  ctx.lineWidth = GUIDE_TRACK_THICKNESS_PIXELS;
   ctx.beginPath();
-  let trackXCoords = [
-    leftWheelCenterX - GUIDE_WHEEL_CURVE_RADIUS + 1,
-    leftWheelCenterX + GUIDE_WHEEL_CURVE_RADIUS - 1,
-    rightWheelCenterX - GUIDE_WHEEL_CURVE_RADIUS + 1,
-    rightWheelCenterX + GUIDE_WHEEL_CURVE_RADIUS - 1,
+  let trackXCanvasCoords = [
+    leftWheelCenterCanvasX - GUIDE_WHEEL_CURVE_RADIUS_PIXELS + 1,
+    leftWheelCenterCanvasX + GUIDE_WHEEL_CURVE_RADIUS_PIXELS - 1,
+    rightWheelCenterCanvasX - GUIDE_WHEEL_CURVE_RADIUS_PIXELS + 1,
+    rightWheelCenterCanvasX + GUIDE_WHEEL_CURVE_RADIUS_PIXELS - 1,
   ];
-  for (let x of trackXCoords) {
+  for (let x of trackXCanvasCoords) {
     ctx.moveTo(x, 0);
-    ctx.lineTo(x, SLOPE_PREVIEW_SIZE);
+    ctx.lineTo(x, SLOPE_PREVIEW_CANVAS_SIZE);
   }
   ctx.stroke();
 
   // Frame connecting guide wheels to piston
-  let upperWheelCenterY = upperWheelOriginY - GUIDE_WHEEL_CENTER_SPAN / 2;
-  let lowerWheelCenterY = lowerWheelOriginY - GUIDE_WHEEL_CENTER_SPAN / 2;
+  let upperWheelCenterCanvasY = upperWheelOriginCanvasY - GUIDE_WHEEL_CENTER_SPAN_PIXELS / 2;
+  let lowerWheelCenterCanvasY = lowerWheelOriginCanvasY - GUIDE_WHEEL_CENTER_SPAN_PIXELS / 2;
   ctx.strokeStyle = "#500000";
-  ctx.lineWidth = GUIDE_FRAME_THICKNESS;
+  ctx.lineWidth = GUIDE_FRAME_THICKNESS_PIXELS;
   ctx.beginPath();
-  ctx.moveTo(leftWheelCenterX, upperWheelCenterY);
-  ctx.lineTo(leftWheelCenterX, lowerWheelCenterY);
-  ctx.moveTo(rightWheelCenterX, upperWheelCenterY);
-  ctx.lineTo(rightWheelCenterX, lowerWheelCenterY);
+  ctx.moveTo(leftWheelCenterCanvasX, upperWheelCenterCanvasY);
+  ctx.lineTo(leftWheelCenterCanvasX, lowerWheelCenterCanvasY);
+  ctx.moveTo(rightWheelCenterCanvasX, upperWheelCenterCanvasY);
+  ctx.lineTo(rightWheelCenterCanvasX, lowerWheelCenterCanvasY);
   ctx.stroke();
   // Piston
   ctx.strokeStyle = "#700000";
-  ctx.lineWidth = PISTON_INNER_THICKNESS;
+  ctx.lineWidth = PISTON_INNER_THICKNESS_PIXELS;
   ctx.beginPath();
-  ctx.moveTo(leftWheelCenterX - PISTON_INNER_THICKNESS / 2, pistonCenterY);
-  ctx.lineTo(rightWheelCenterX + PISTON_INNER_THICKNESS / 2, pistonCenterY);
+  ctx.moveTo(leftWheelCenterCanvasX - PISTON_INNER_THICKNESS_PIXELS / 2, pistonCenterCanvasY);
+  ctx.lineTo(rightWheelCenterCanvasX + PISTON_INNER_THICKNESS_PIXELS / 2, pistonCenterCanvasY);
   ctx.stroke();
   ctx.strokeStyle = "#900000";
-  ctx.lineWidth = PISTON_OUTER_THICKNESS;
+  ctx.lineWidth = PISTON_OUTER_THICKNESS_PIXELS;
   ctx.beginPath();
-  ctx.moveTo(denom + SLOPE_PREVIEW_SPAN + PIVOT_RADIUS + 1, pistonCenterY);
-  ctx.lineTo(denom + SLOPE_PREVIEW_SPAN - AIMING_RANGE - PIVOT_RADIUS, pistonCenterY);
+  ctx.moveTo(denom + SLOPE_PREVIEW_CANVAS_SPAN + PIVOT_RADIUS_PIXELS + 1, pistonCenterCanvasY);
+  ctx.lineTo(denom + SLOPE_PREVIEW_CANVAS_SPAN - AIMING_RANGE - PIVOT_RADIUS_PIXELS, pistonCenterCanvasY);
   ctx.stroke();
 
   // Pivot attaching cannon to aiming mechanism
   ctx.fillStyle = "#0000f0";
   ctx.beginPath();
-  ctx.arc(denom + SLOPE_PREVIEW_SPAN, pistonCenterY, PIVOT_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(denom + SLOPE_PREVIEW_CANVAS_SPAN, pistonCenterCanvasY, PIVOT_RADIUS_PIXELS, 0, 2 * Math.PI);
   ctx.fill();
 
   // Cannon, supporting structures, and lazor beam (set to be mostly transparent)
   ctx.globalAlpha = 0.2;
   // Cannon support frame
   ctx.strokeStyle = "#c0c0c0";
-  ctx.lineWidth = SUPPORT_FRAME_THICKNESS;
+  ctx.lineWidth = SUPPORT_FRAME_THICKNESS_PIXELS;
   ctx.beginPath();
-  ctx.moveTo(SLOPE_PREVIEW_SPAN, 0);
-  ctx.lineTo(SLOPE_PREVIEW_SPAN, SLOPE_PREVIEW_SIZE);
+  ctx.moveTo(SLOPE_PREVIEW_CANVAS_SPAN, 0);
+  ctx.lineTo(SLOPE_PREVIEW_CANVAS_SPAN, SLOPE_PREVIEW_CANVAS_SIZE);
   ctx.stroke();
   // Larger pivot attaching the cannon to the support frame
   ctx.fillStyle = "#0000a0";
   ctx.beginPath();
-  ctx.arc(SLOPE_PREVIEW_SPAN, SLOPE_PREVIEW_SPAN, 2 * PIVOT_RADIUS, 0, 2 * Math.PI);
+  ctx.arc(SLOPE_PREVIEW_CANVAS_SPAN, SLOPE_PREVIEW_CANVAS_SPAN, 2 * PIVOT_RADIUS_PIXELS, 0, 2 * Math.PI);
   ctx.fill();
   // Lazor beam
   ctx.strokeStyle = LAZOR_COLOR;
-  ctx.lineWidth = LAZOR_BEAM_WIDTH * SLOPE_PREVIEW_SCALE_FACTOR;
+  ctx.lineWidth = LAZOR_BEAM_WIDTH_PIXELS * SLOPE_PREVIEW_SCALE_FACTOR;
   ctx.beginPath();
-  ctx.moveTo(0, SLOPE_PREVIEW_SPAN * (1 + slope));
-  ctx.lineTo(SLOPE_PREVIEW_SIZE, SLOPE_PREVIEW_SPAN * (1 - slope));
+  ctx.moveTo(0, SLOPE_PREVIEW_CANVAS_SPAN * (1 + slope));
+  ctx.lineTo(SLOPE_PREVIEW_CANVAS_SIZE, SLOPE_PREVIEW_CANVAS_SPAN * (1 - slope));
   ctx.stroke();
   // Cannon barrel
-  drawCannonBarrel(ctx, SLOPE_PREVIEW_SPAN, SLOPE_PREVIEW_SPAN, slope, SLOPE_PREVIEW_SCALE_FACTOR);
+  drawCannonBarrel(ctx, SLOPE_PREVIEW_CANVAS_SPAN, SLOPE_PREVIEW_CANVAS_SPAN, slope, SLOPE_PREVIEW_SCALE_FACTOR);
   // Reset transparency to "completely opaque" since that's what we want everywhere except here
   ctx.globalAlpha = 1.0;
 }
-// For the slope preview, draws a guide wheel whose lower curve is centered at (x, y)
-function drawGuideWheel(ctx, x, y) {
+// For the slope preview, draws a guide wheel whose lower curve is centered at (canvasX, canvasY)
+function drawGuideWheel(ctx, canvasX, canvasY) {
   ctx.fillStyle = "black";
   ctx.beginPath();
-  ctx.arc(x, y, GUIDE_WHEEL_CURVE_RADIUS, 0, Math.PI);
-  ctx.arc(x, y - GUIDE_WHEEL_CENTER_SPAN, GUIDE_WHEEL_CURVE_RADIUS, Math.PI, 2 * Math.PI);
+  ctx.arc(canvasX, canvasY, GUIDE_WHEEL_CURVE_RADIUS_PIXELS, 0, Math.PI);
+  ctx.arc(canvasX, canvasY - GUIDE_WHEEL_CENTER_SPAN_PIXELS, GUIDE_WHEEL_CURVE_RADIUS_PIXELS, Math.PI, 2 * Math.PI);
   ctx.closePath();
   ctx.fill();
 }
@@ -843,7 +843,7 @@ function checkLazorEffects(enemy) {
 // assuming the lazor is pointed along the line indicated by the cartSlope and cartIntercept variables
 function lazorHitsEnemy(enemy) {
   // The lazor touches the enemy if its center line is within this distance of the enemy's center.
-  let distanceLimit = canvasToFieldDistance(enemy.radiusPixels + LAZOR_BEAM_WIDTH / 2);
+  let distanceLimit = canvasToFieldDistance(enemy.radiusPixels + LAZOR_BEAM_WIDTH_PIXELS / 2);
   // The distance from the lazor's center line to the center of the enemy is proportional to this amount.
   let scaledDistance = enemy.y - cartSlope * enemy.x - cartIntercept;
   // Since the proportionality constant is the square root of (1 plus the square of the slope),
