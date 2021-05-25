@@ -22,9 +22,14 @@ const CANVAS_HEIGHT = 2 * CANVAS_V_SPAN + 1;
 
 // Width of each individual track or crossbar in the railway
 const RAIL_WIDTH_PIXELS = 2;
+
+// x-coordinate of the right side of the railway.
+// This value and its negative are also the coordinates enemies will end up at
+// if they reach the railway and start damaging it.
+const RAIL_X_COORD = 1;
 // Distance between the two rails of the railway
-const RAIL_WHEELSPAN_PIXELS = 20;
-const RAIL_HALF_WHEELSPAN_PIXELS = RAIL_WHEELSPAN_PIXELS / 2;
+const RAIL_HALF_WHEELSPAN_PIXELS = RAIL_X_COORD * SCALE;
+const RAIL_WHEELSPAN_PIXELS = 2 * RAIL_HALF_WHEELSPAN_PIXELS;
 
 // X-coordinates of the two rails (from a graphics perspective)
 const LEFT_RAIL_COORD_PIXELS = CANVAS_H_SPAN - RAIL_HALF_WHEELSPAN_PIXELS;
@@ -46,12 +51,12 @@ const CROSSBAR_RIGHT_END_PIXELS = RIGHT_RAIL_COORD_PIXELS + CROSSBAR_OVERSHOOT_P
 // Sizes of cart components
 const CART_BACKGROUND_BORDER_WIDTH_PIXELS = 1;
 const CART_FOREGROUND_BORDER_WIDTH_PIXELS = 2;
-const CART_BASE_WIDTH_PIXELS = 30;
-const CART_BASE_HEIGHT_PIXELS = 50;
+const CART_BASE_WIDTH_PIXELS = 3.5 * RAIL_HALF_WHEELSPAN_PIXELS;
+const CART_BASE_HEIGHT_PIXELS = CART_BASE_WIDTH_PIXELS * 5 / 3;
 const LAZOR_BEAM_WIDTH_PIXELS = 3;
 // Total width and height of cannon (not just distance from center)
-const CANNON_WIDTH_PIXELS = 12;
-const CANNON_LENGTH_PIXELS = 48;
+const CANNON_LENGTH_PIXELS = CART_BASE_HEIGHT_PIXELS * 15 / 16;
+const CANNON_WIDTH_PIXELS = CANNON_LENGTH_PIXELS / 4;
 // Distance from the center of the cart to a corner of the cannon
 const CANNON_RADIUS_PIXELS = Math.sqrt(CANNON_WIDTH_PIXELS * CANNON_WIDTH_PIXELS + CANNON_LENGTH_PIXELS * CANNON_LENGTH_PIXELS) / 2;
 // Positive angle between the direction of the lazor beam
