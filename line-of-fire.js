@@ -170,8 +170,8 @@ const ENEMY_TYPES = {
     minRadiusPixels: 5,
     maxRadiusPixels: 8,
     startingHealth: 1,
-    minSpeed: FIELD_H_SPAN * 3 / 4,
-    maxSpeed: FIELD_H_SPAN * 15 / 16,
+    minSpeed: FIELD_H_SPAN * 9 / 16,
+    maxSpeed: FIELD_H_SPAN * 11 / 16,
   },
 };
 
