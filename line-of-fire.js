@@ -746,7 +746,7 @@ function spawnEnemy(enemyType) {
   // Now that we have the values calculated above, we'll randomize the enemy, then repeat if it can't be hit.
   let minY, maxY;
   do {
-    enemy.speed = randomFromRealRange(enemyType.minSpeed, enemyType.maxSpeed);
+    enemy.speed = randomFromIntegerRange(Math.ceil(2 * enemyType.minSpeed), Math.floor(2 * enemyType.maxSpeed)) / 2;
 
     let distanceOfEntry = randomFromIntegerRange(0, Math.floor(enemy.speed));
     // 50/50 chance of spawning on either the left or the right side
