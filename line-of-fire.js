@@ -154,7 +154,8 @@ const STAGES = [
   // Stage 3
   {
     intro: "You are now in game stage 3. This stage has yet to be fully defined."
-      + " Enemies will now spawn even if you miss. This is the last stage of the game for now.",
+      + " Now, even if you miss, new enemies will spawn and surviving enemies will move closer."
+      + " This is the last stage of the game for now.",
     safe: false,
     spawn: function() { return [ENEMY_TYPES.runner, ENEMY_TYPES.runner]; },
     checkSpawns: function(spawned) { ensureCombo(spawned[0], spawned[1]); },
@@ -199,6 +200,7 @@ var cartSlope = 0;
 // health: The enemy's current health; how many times the enemy still needs to be hit to destroy it
 // speed: How far the enemy moves, measured in battlefield units (i.e. Cartesian grid coordinates)
 // x, y: The coordinates of the center of the enemy, measured in battlefield units
+// threat: 0 or undefined if the enemy hasn't reached the rail yet, 1 if attacking the rail, 2 if attacking the cart
 var enemies = [];
 
 // Messages to communicate with the player about things that happened in the game
@@ -583,7 +585,9 @@ function describeTarget(event) {
     let dy = event.offsetY - fieldToCanvasY(enemy.y);
     if (dx * dx + dy * dy <= enemy.radiusPixels * enemy.radiusPixels) {
       // TODO: update to provide more information about the enemy, and maybe be able to handle multiple overlapping enemies
-      message += " with an enemy of radius " + canvasToFieldDistance(enemy.radiusPixels).toFixed(2) + " at (" + enemy.x + ", " + enemy.y + ")";
+      message += " with an enemy of radius " + canvasToFieldDistance(enemy.radiusPixels).toFixed(2)
+        + " and speed " + enemy.speed
+        + " at (" + enemy.x + ", " + enemy.y + ")";
     }
   }
   document.getElementById("mouseover-status").innerHTML = message;
@@ -686,7 +690,35 @@ function updateEnemies() {
   enemies = enemies.filter(enemy => enemy.health > 0);
   stageKills += previousEnemyCount - enemies.length;
 
-  // TODO: have surviving enemies move (unless we're in one of the "safe" stages)
+  // Have surviving enemies move (unless we're in one of the "safe" stages)
+  if (!currentStage.safe) {
+    let newThreats = 0;
+    for (let enemy of enemies) {
+      // Skip any enemies that are already at the rail
+      // TODO: These enemies should instead damage the rail or move toward the cart
+      if (enemy.threat) {
+        continue;
+      }
+      // To make the calculations easier, we'll temporarily pretend that every enemy is on the right side of the map.
+      let newX = Math.abs(enemy.x) - enemy.speed;
+      if (newX <= RAIL_X_COORD) {
+        // TODO: Determine whether the enemy has hit the cart or the rail; if the former, do different stuff here
+        enemy.threat = 1;
+        newX = RAIL_X_COORD;
+        newThreats++;
+      }
+      enemy.x = enemy.x > 0 ? newX : -newX;
+    }
+    if (newThreats > 0) {
+      // TODO: Update this message once close-range combat mechanics have been implemented
+      let message = (newThreats === 1) ? "An enemy has" : (newThreats + " enemies have");
+      message += " reached the railway! ";
+      message += (newThreats === 1) ? "It" : "They";
+      message += " should be damaging the rails, but that hasn't been implemented yet.";
+      advisories.push(message);
+      updateAdvisoryDisplay();
+    }
+  }
 }
 
 // Spawn new enemies according to the rules of the current game stage
