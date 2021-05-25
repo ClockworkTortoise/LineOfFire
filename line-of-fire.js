@@ -273,11 +273,11 @@ function drawBattlefield(includeLazor = true, includePreview = false) {
   let ctx = document.getElementById("battlefield").getContext("2d");
   ctx.clearRect(0, 0, CANVAS_WIDTH, CANVAS_HEIGHT);
   drawTerrain(ctx);
-  drawEnemies(ctx);
   drawCart(ctx, includeLazor);
   if (includePreview) {
     drawCart(ctx, true, true);
   }
+  drawEnemies(ctx);
 }
 
 function drawTerrain(ctx) {
